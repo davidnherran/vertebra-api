@@ -23,7 +23,7 @@ export class PostgresLib {
     this.users = new Users();
   }
 
-  private async existUser(username: string) {
+  public async existUser(username: string) {
     const existingUsername = (await this.usersRepository).findByUsername(
       username
     );

@@ -1,2 +1,4 @@
 // error codes auth
 export const USERNAME_IS_ALREADY_IN_USE = '@auth/USERNAME_IS_ALREADY_IN_USE';
+export const INCORRECT_USERNAME = '@auth/INCORRECT_USERNAME';
+export const INCORRECT_PASSWORD = '@auth/INCORRECT_PASSWORD';

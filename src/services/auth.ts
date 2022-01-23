@@ -1,6 +1,10 @@
 import bcrypt from 'bcryptjs';
 import { GraphQLString } from 'graphql';
 import { PostgresLib } from '../lib/postgresLib';
+import {
+  INCORRECT_USERNAME,
+  INCORRECT_PASSWORD,
+} from '../utils/handlerErrors/codes';
 export default class AuthServices {
   private table: string;
   private postgresLib: PostgresLib;
@@ -23,6 +27,17 @@ export default class AuthServices {
     };
   }
 
+  public get argsLoginUser() {
+    return {
+      username: {
+        type: GraphQLString,
+      },
+      password: {
+        type: GraphQLString,
+      },
+    };
+  }
+
   public async createUser(
     username: string,
     password: string,
@@ -35,5 +50,18 @@ export default class AuthServices {
       displayName
     );
     return createdUser;
+  }
+
+  public async loginUser(username: string, password: string) {
+    const user = await this.postgresLib.existUser(username);
+    if (!user) {
+      return INCORRECT_USERNAME;
+    }
+    if (!(await bcrypt.compare(password, user.password!))) {
+      return INCORRECT_PASSWORD;
+    }
+    delete user.password;
+
+    return user;
   }
 }

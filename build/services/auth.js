@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const graphql_1 = require("graphql");
 const postgresLib_1 = require("../lib/postgresLib");
+const codes_1 = require("../utils/handlerErrors/codes");
 class AuthServices {
     constructor() {
         this.table = 'users';
@@ -33,11 +34,34 @@ class AuthServices {
             },
         };
     }
+    get argsLoginUser() {
+        return {
+            username: {
+                type: graphql_1.GraphQLString,
+            },
+            password: {
+                type: graphql_1.GraphQLString,
+            },
+        };
+    }
     createUser(username, password, displayName) {
         return __awaiter(this, void 0, void 0, function* () {
             const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
             const createdUser = yield this.postgresLib.registerUser(username, hashedPassword, displayName);
             return createdUser;
+        });
+    }
+    loginUser(username, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.postgresLib.existUser(username);
+            if (!user) {
+                return codes_1.INCORRECT_USERNAME;
+            }
+            if (!(yield bcryptjs_1.default.compare(password, user.password))) {
+                return codes_1.INCORRECT_PASSWORD;
+            }
+            delete user.password;
+            return user;
         });
     }
 }

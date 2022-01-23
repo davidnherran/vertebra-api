@@ -24,3 +24,8 @@ interface UserDB extends CreateUser {
 interface PropsJWT {
   user: UserDB | string
 }
+
+interface SignIn {
+  username: string
+  password: string
+}
