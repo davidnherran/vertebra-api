@@ -24,7 +24,7 @@ exports.default = {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield authServices.loginUser(args.username, args.password);
             if (typeof user === 'string')
-                return user;
+                throw new Error(user);
             return jwt.generateJWT({ user });
         });
     },

@@ -7,6 +7,5 @@ exports.default = new graphql_1.GraphQLObjectType({
     description: 'The root mutation type',
     fields: {
         register: fields_1.register,
-        login: fields_1.login,
     },
 });

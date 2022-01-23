@@ -26,7 +26,7 @@ exports.default = {
             const { username, password, displayName } = args;
             const createdUser = yield authService.createUser(username, password, displayName);
             if (createdUser === codes_1.USERNAME_IS_ALREADY_IN_USE)
-                return codes_1.USERNAME_IS_ALREADY_IN_USE;
+                throw new Error(codes_1.USERNAME_IS_ALREADY_IN_USE);
             return jwt.generateJWT({ user: createdUser });
         });
     },

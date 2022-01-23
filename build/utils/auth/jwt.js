@@ -15,5 +15,11 @@ class JWT {
             expiresIn: this.expiresIn,
         });
     }
+    validateToken(token) {
+        if (!token)
+            return { user: false };
+        const payload = jsonwebtoken_1.default.verify(token.split(' ')[1], config_1.envConfig.jwtSecretKey);
+        return { user: payload.user };
+    }
 }
 exports.default = JWT;

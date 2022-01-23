@@ -4,8 +4,8 @@ import { UsersRepository } from './repositories/users-repository';
 import { envConfig } from '../../config/index';
 import { USERNAME_IS_ALREADY_IN_USE } from '../../utils/handlerErrors/codes';
 export class PostgresLib {
-  private connection: Promise<Connection>;
-  private usersRepository: Promise<UsersRepository>;
+  public connection: Promise<Connection>;
+  //private usersRepository: Promise<UsersRepository>;
   private users: Users;
   constructor() {
     this.connection = createConnection({
@@ -17,17 +17,19 @@ export class PostgresLib {
       database: envConfig.dbName,
       entities: [Users],
     });
-    this.usersRepository = this.connection.then((connect) =>
+    /* this.usersRepository = this.connection.then((connect) =>
       connect.getCustomRepository(UsersRepository)
-    );
+    ); */
     this.users = new Users();
   }
 
-  public async existUser(username: string) {
-    const existingUsername = (await this.usersRepository).findByUsername(
-      username
-    );
-    return existingUsername;
+  public async existUser(username: string, connectExtend?: Connection) {
+    const connect = await this.connection
+    const user = await connect
+      .getCustomRepository(UsersRepository)
+      .findByUsername(username);
+    connect.close()
+    return user;
   }
 
   public async registerUser(
@@ -35,28 +37,56 @@ export class PostgresLib {
     password: string,
     displayName: string
   ) {
-    const existingUsername = await this.existUser(username);
+    const connect = await this.connection;
+    const existingUsername = await connect
+      .getCustomRepository(UsersRepository)
+      .findByUsername(username);
     if (Boolean(existingUsername)) return USERNAME_IS_ALREADY_IN_USE;
     this.users.displayName = displayName;
     this.users.password = password;
     this.users.username = username;
-    const user = await (await this.usersRepository).save(this.users);
-    delete user.password
-    return user
+    const user = await connect
+      .getCustomRepository(UsersRepository)
+      .save(this.users);
+    delete user.password;
+    connect.close();
+    return user;
   }
 
   public async updateUsername(newUsername: string, oldUsername: string) {
-    const user = await this.existUser(oldUsername);
-    return (await this.usersRepository).updateUsername(user?.id!, newUsername);
+    const connect = await this.connection;
+    const user = await connect
+    .getCustomRepository(UsersRepository)
+    .findByUsername(oldUsername);
+    return connect
+      .getCustomRepository(UsersRepository)
+      .updateUsername(user?.id!, newUsername)
+      .then((result) => result)
+      .finally(() => connect.close());
+    //return updatedUsername;
   }
 
   public async updatePassword(newPassword: string, id: number) {
-    const user = await (await this.usersRepository).findById(id);
-    return (await this.usersRepository).updatePassword(user?.id!, newPassword);
+    const connect = await this.connection;
+    const user = await connect
+      .getCustomRepository(UsersRepository)
+      .findById(id);
+    const updatedPassword = await connect
+      .getCustomRepository(UsersRepository)
+      .updatePassword(user?.id!, newPassword);
+    connect.close();
+    return updatedPassword;
   }
 
   public async deleteUser(id: number) {
-    const user = await (await this.usersRepository).findById(id);
-    return await (await this.usersRepository).remove(user!);
+    const connect = await this.connection;
+    const user = await connect
+      .getCustomRepository(UsersRepository)
+      .findById(id);
+    const deletedUser = await connect
+      .getCustomRepository(UsersRepository)
+      .remove(user!);
+    connect.close();
+    return deletedUser;
   }
 }

@@ -1,4 +1,4 @@
-import { GraphQLObjectType } from 'graphql';
+import { GraphQLObjectType, GraphQLString } from 'graphql';
 import { register, login } from './fields';
 
 export default new GraphQLObjectType({
@@ -6,6 +6,5 @@ export default new GraphQLObjectType({
   description: 'The root mutation type',
   fields: {
     register,
-    login,
   },
 });

@@ -64,4 +64,9 @@ export default class AuthServices {
 
     return user;
   }
+
+  public async getUser(username: string) {
+    const user = await this.postgresLib.existUser(username);
+    return user;
+  }
 }

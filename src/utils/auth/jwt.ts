@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import { envConfig } from '../../config';
+//import AuthServices from '../../services/auth';
 
 export default class JWT {
   private secretKey: string;
@@ -13,5 +14,14 @@ export default class JWT {
     return jwt.sign({ user }, this.secretKey, {
       expiresIn: this.expiresIn,
     });
+  }
+
+  validateToken(token: string) {
+    if (!token) return { user: false };
+    const payload: any = jwt.verify(
+      token.split(' ')[1],
+      envConfig.jwtSecretKey!
+    );
+    return { user: payload.user };
   }
 }

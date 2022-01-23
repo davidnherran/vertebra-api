@@ -3,8 +3,8 @@ import AuthServices from '../../../services/auth';
 import JWT from '../../auth/jwt';
 import { USERNAME_IS_ALREADY_IN_USE } from '../../handlerErrors/codes';
 
-const authService = new AuthServices()
-const jwt = new JWT()
+const authService = new AuthServices();
+const jwt = new JWT();
 
 export default {
   type: GraphQLString,
@@ -18,7 +18,7 @@ export default {
     );
 
     if (createdUser === USERNAME_IS_ALREADY_IN_USE)
-      return USERNAME_IS_ALREADY_IN_USE;
+      throw new Error(USERNAME_IS_ALREADY_IN_USE);
     return jwt.generateJWT({ user: createdUser });
   },
   args: authService.argsCreateUser,

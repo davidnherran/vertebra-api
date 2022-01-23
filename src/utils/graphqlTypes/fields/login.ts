@@ -10,7 +10,7 @@ export default {
   description: 'Login of the user and returns the token',
   async resolve(_: any, args: SignIn) {
     const user = await authServices.loginUser(args.username, args.password);
-    if (typeof user === 'string') return user;
+    if (typeof user === 'string') throw new Error(user);
     return jwt.generateJWT({ user });
   },
   args: authServices.argsLoginUser,

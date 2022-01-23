@@ -26,44 +26,74 @@ class PostgresLib {
             database: index_1.envConfig.dbName,
             entities: [users_1.Users],
         });
-        this.usersRepository = this.connection.then((connect) => connect.getCustomRepository(users_repository_1.UsersRepository));
         this.users = new users_1.Users();
     }
-    existUser(username) {
+    existUser(username, connectExtend) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existingUsername = (yield this.usersRepository).findByUsername(username);
-            return existingUsername;
+            const connect = yield this.connection;
+            const user = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .findByUsername(username);
+            connect.close();
+            return user;
         });
     }
     registerUser(username, password, displayName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existingUsername = yield this.existUser(username);
+            const connect = yield this.connection;
+            const existingUsername = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .findByUsername(username);
             if (Boolean(existingUsername))
                 return codes_1.USERNAME_IS_ALREADY_IN_USE;
             this.users.displayName = displayName;
             this.users.password = password;
             this.users.username = username;
-            const user = yield (yield this.usersRepository).save(this.users);
+            const user = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .save(this.users);
             delete user.password;
+            connect.close();
             return user;
         });
     }
     updateUsername(newUsername, oldUsername) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield this.existUser(oldUsername);
-            return (yield this.usersRepository).updateUsername(user === null || user === void 0 ? void 0 : user.id, newUsername);
+            const connect = yield this.connection;
+            const user = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .findByUsername(oldUsername);
+            return connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .updateUsername(user === null || user === void 0 ? void 0 : user.id, newUsername)
+                .then((result) => result)
+                .finally(() => connect.close());
         });
     }
     updatePassword(newPassword, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield (yield this.usersRepository).findById(id);
-            return (yield this.usersRepository).updatePassword(user === null || user === void 0 ? void 0 : user.id, newPassword);
+            const connect = yield this.connection;
+            const user = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .findById(id);
+            const updatedPassword = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .updatePassword(user === null || user === void 0 ? void 0 : user.id, newPassword);
+            connect.close();
+            return updatedPassword;
         });
     }
     deleteUser(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const user = yield (yield this.usersRepository).findById(id);
-            return yield (yield this.usersRepository).remove(user);
+            const connect = yield this.connection;
+            const user = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .findById(id);
+            const deletedUser = yield connect
+                .getCustomRepository(users_repository_1.UsersRepository)
+                .remove(user);
+            connect.close();
+            return deletedUser;
         });
     }
 }
