@@ -27,7 +27,6 @@ export class PostgresLib {
       password: envConfig.dbPassword,
       database: envConfig.dbName,
       entities: [Users, Characters, Locations, Episodes],
-      synchronize: true,
     });
     this.users = new Users();
     this.location = new Locations();

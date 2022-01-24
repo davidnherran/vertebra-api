@@ -9,25 +9,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const inquirer_1 = require("inquirer");
 const pg_1 = require("pg");
-const getCredentials = () => __awaiter(void 0, void 0, void 0, function* () {
-    const dataConnection = yield (0, inquirer_1.prompt)([
-        {
-            type: 'input',
-            message: 'Username',
-            name: 'username',
-        },
-        {
-            type: 'password',
-            message: 'Password',
-            name: 'password',
-        },
-    ]);
-    return dataConnection;
-});
+const getCredentials_1 = require("./functions/getCredentials");
+const createTableUser_1 = require("./functions/createTableUser");
+const createDatabase = (client, password, username) => {
+    client
+        .query('create database vertebra_technical_test')
+        .then(() => {
+        (0, createTableUser_1.createTableUsers)(username, password);
+    })
+        .catch((err) => {
+        console.log(`database vertebra_technical_test already exist`);
+    });
+};
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
-    const dataConnection = yield getCredentials();
+    const dataConnection = yield (0, getCredentials_1.getCredentials)();
     const { username, password } = dataConnection;
     const pool = new pg_1.Pool({
         user: username,
@@ -38,19 +34,9 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
     return yield pool
         .connect()
         .then((client) => {
-        client
-            .query('create database vertebra_technical_test')
-            .then((res) => {
-            console.log(res);
-            pool.end();
-        })
-            .catch((err) => {
-            console.log(`database vertebra_technical_test already exist`);
-            pool.end();
-        });
+        createDatabase(client, password, username);
     })
         .catch((err) => {
-        console.log(err);
         console.log(`password authentication failed for user ${username}, try again!`);
         return true;
     });

@@ -14,7 +14,7 @@ const context = (req) => {
     const { authorization: token } = req.headers;
     return jwt.validateToken(token);
 };
-app.use('/graphql', (0, express_graphql_1.graphqlHTTP)((req, res, next) => ({
+app.use('/graphql', (0, express_graphql_1.graphqlHTTP)((req) => ({
     schema: graphql_1.default,
     graphiql: config_1.envConfig.dev,
     customFormatErrorFn(err) {

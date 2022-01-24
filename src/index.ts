@@ -17,7 +17,7 @@ const context = (req: Request) => {
 
 app.use(
   '/graphql',
-  graphqlHTTP((req, res, next) => ({
+  graphqlHTTP((req) => ({
     schema,
     graphiql: envConfig.dev,
     customFormatErrorFn(err) {

@@ -31,7 +31,6 @@ class PostgresLib {
             password: index_1.envConfig.dbPassword,
             database: index_1.envConfig.dbName,
             entities: [users_1.Users, characters_1.Characters, locations_1.Locations, episodes_1.Episodes],
-            synchronize: true,
         });
         this.users = new users_1.Users();
         this.location = new locations_1.Locations();

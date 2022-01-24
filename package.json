@@ -4,8 +4,11 @@
   "description": "vertebra technical test",
   "main": "/build/index.js",
   "scripts": {
-    "dev": "set DEBUG=app:express:graphql:* && set NODE_ENV=development && nodemon build/index",
-    "start": "set NODE_ENV=production && node build/index"
+    "dev": "set DEBUG=app:express:graphql:* && set NODE_ENV=development && nodemon build/src/index",
+    "start": "set NODE_ENV=production && node build/src/index",
+    "cli:create": "node build/cli/commands.js migrate",
+    "cli:delete": "node build/cli/commands.js migrate --delete",
+    "install:clean": "rm -rf node_modules/ && rm -rf package-lock.json && npm install && npm start"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,7 @@
   },
   "homepage": "https://github.com/davidnherran/vertebra-api#readme",
   "dependencies": {
+    "axios": "^0.25.0",
     "bcryptjs": "^2.4.3",
     "cli-spinners": "^2.6.1",
     "commander": "^8.3.0",

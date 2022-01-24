@@ -1,10 +1,7 @@
 import { prompt } from 'inquirer';
 import { Pool } from 'pg';
-import { envConfig } from '../config';
 import { program } from 'commander';
-import Spinner from './loaders';
-const spinner = new Spinner();
-import migrate from './functions/migrate';
+import migrate from './migrate';
 
 program
   .version('0.0.1')
@@ -27,13 +24,8 @@ program
           message: 'Password',
           name: 'password',
         },
-        {
-          type: 'input',
-          message: 'Database name',
-          name: 'database_name',
-        },
       ]);
-      const { username, password, database_name } = dataConnection;
+      const { username, password } = dataConnection;
 
       const pool = new Pool({
         user: username,
@@ -42,13 +34,19 @@ program
         host: 'localhost',
       });
 
-      pool.query(`drop database ${database_name}`, (err, res) => {
+      pool.query(`drop database vertebra_technical_test`, (err) => {
         if (err) {
           console.log(
-            `An error occurred while trying to delete the named database ${database_name}`
+            `An error occurred while trying to delete the named database vertebra_technical_test`
           );
+          setImmediate(() => {
+            process.exit(0);
+          });
         } else {
-          console.log(`${database_name} database deleted`)
+          console.log(`✅ vertebra_technical_test database deleted`);
+          setImmediate(() => {
+            process.exit(0);
+          });
         }
       });
     } else {
@@ -56,8 +54,8 @@ program
       if (error) {
         const error = await migrate();
         if (error) {
-          const error = await migrate();
-          console.log(error);
+          await migrate();
+          process.exit(0);
         }
       }
     }

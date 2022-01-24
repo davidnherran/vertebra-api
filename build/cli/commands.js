@@ -15,9 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const inquirer_1 = require("inquirer");
 const pg_1 = require("pg");
 const commander_1 = require("commander");
-const loaders_1 = __importDefault(require("./loaders"));
-const spinner = new loaders_1.default();
-const migrate_1 = __importDefault(require("./functions/migrate"));
+const migrate_1 = __importDefault(require("./migrate"));
 commander_1.program
     .version('0.0.1')
     .description('Terminal application for Postgresql database migration');
@@ -38,25 +36,26 @@ commander_1.program
                 message: 'Password',
                 name: 'password',
             },
-            {
-                type: 'input',
-                message: 'Database name',
-                name: 'database_name',
-            },
         ]);
-        const { username, password, database_name } = dataConnection;
+        const { username, password } = dataConnection;
         const pool = new pg_1.Pool({
             user: username,
             password,
             port: 5432,
             host: 'localhost',
         });
-        pool.query(`drop database ${database_name}`, (err, res) => {
+        pool.query(`drop database vertebra_technical_test`, (err) => {
             if (err) {
-                console.log(`An error occurred while trying to delete the named database ${database_name}`);
+                console.log(`An error occurred while trying to delete the named database vertebra_technical_test`);
+                setImmediate(() => {
+                    process.exit(0);
+                });
             }
             else {
-                console.log(`${database_name} database deleted`);
+                console.log(`✅ vertebra_technical_test database deleted`);
+                setImmediate(() => {
+                    process.exit(0);
+                });
             }
         });
     }
@@ -65,8 +64,8 @@ commander_1.program
         if (error) {
             const error = yield (0, migrate_1.default)();
             if (error) {
-                const error = yield (0, migrate_1.default)();
-                console.log(error);
+                yield (0, migrate_1.default)();
+                process.exit(0);
             }
         }
     }
