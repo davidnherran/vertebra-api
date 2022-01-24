@@ -1,7 +1,6 @@
 // packages
 import express from 'express';
 import { graphqlHTTP } from 'express-graphql';
-import jwt from 'jsonwebtoken';
 
 
 // project

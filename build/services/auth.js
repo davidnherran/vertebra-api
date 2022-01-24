@@ -18,7 +18,6 @@ const postgresLib_1 = require("../lib/postgresLib");
 const codes_1 = require("../utils/handlerErrors/codes");
 class AuthServices {
     constructor() {
-        this.table = 'users';
         this.postgresLib = new postgresLib_1.PostgresLib();
     }
     get argsCreateUser() {

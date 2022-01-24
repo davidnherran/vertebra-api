@@ -6,10 +6,8 @@ import {
   INCORRECT_PASSWORD,
 } from '../utils/handlerErrors/codes';
 export default class AuthServices {
-  private table: string;
   private postgresLib: PostgresLib;
   constructor() {
-    this.table = 'users';
     this.postgresLib = new PostgresLib();
   }
 

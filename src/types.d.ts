@@ -7,7 +7,7 @@ interface EnvironmentVariables {
   dbUsername?: string;
   dbPassword?: string;
   dbName?: string;
-  jwtSecretKey?: string
+  jwtSecretKey?: string;
 }
 
 interface CreateUser {
@@ -22,10 +22,27 @@ interface UserDB extends CreateUser {
 }
 
 interface PropsJWT {
-  user: UserDB | string
+  user: UserDB | string;
 }
 
 interface SignIn {
-  username: string
-  password: string
+  username: string;
+  password: string;
 }
+
+interface Get {
+  limit: Array<number>;
+  controller: string;
+}
+
+interface LocationsContent {
+  id: !number;
+  name: !string;
+  type: !string;
+  dimension: !string;
+  resident: !Array<string>;
+  url: !string;
+  created: !string;
+}
+
+type LocationsResponse = { location: Array<LocationsContent> };
