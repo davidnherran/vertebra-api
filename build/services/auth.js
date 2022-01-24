@@ -78,5 +78,12 @@ class AuthServices {
             return updatedUSername;
         });
     }
+    updatePassword(id, newpassword) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const hashedPassword = yield bcryptjs_1.default.hash(newpassword, 10);
+            const updatePassword = yield this.postgresLib.updatePassword(id, hashedPassword);
+            return updatePassword;
+        });
+    }
 }
 exports.default = AuthServices;

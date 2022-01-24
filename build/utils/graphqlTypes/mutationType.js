@@ -15,9 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const fields_1 = require("./fields");
 const auth_1 = __importDefault(require("../../services/auth"));
-const jwt_1 = __importDefault(require("../auth/jwt"));
-const autService = new auth_1.default();
-const jwt = new jwt_1.default();
+const authService = new auth_1.default();
 exports.default = new graphql_1.GraphQLObjectType({
     name: 'MutationType',
     description: 'The root mutation type',
@@ -27,34 +25,31 @@ exports.default = new graphql_1.GraphQLObjectType({
         create: fields_1.create,
         delete: fields_1.deleteCrud,
         update: fields_1.update,
-        updateUsername: {
+        updateUsername: fields_1.updateUsername,
+        updatePassword: {
             type: new graphql_1.GraphQLObjectType({
-                name: 'UpdateUsername',
+                name: 'UpdatePassword',
                 fields: {
                     message: { type: graphql_1.GraphQLString },
-                    newUsername: { type: graphql_1.GraphQLString },
-                    token: { type: graphql_1.GraphQLString },
                     affected: { type: graphql_1.GraphQLInt },
                 },
             }),
-            description: 'update username',
-            args: {
-                oldUsername: { type: graphql_1.GraphQLString },
-                newUsername: { type: graphql_1.GraphQLString },
-            },
+            description: 'update password',
             resolve(_, args, context) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const auth = context();
-                    if (!auth.user || auth.user.username !== args.oldUsername)
+                    if (!auth.user)
                         throw new Error('UNHAUTORIZED');
-                    const newusername = yield autService.updateUsername(args.newUsername, args.oldUsername, auth.user);
+                    const newPassword = yield authService.updatePassword(auth.user.id, args.newPassword);
+                    console.log(newPassword);
                     return {
-                        message: 'updated username',
-                        newUsername: `your new username is now ${args.newUsername}`,
-                        affected: newusername.data.affected,
-                        token: newusername.newtoken,
+                        message: `updated password of the user with identifier ${auth.user.id} and username ${auth.user.username}`,
+                        affected: newPassword.affected,
                     };
                 });
+            },
+            args: {
+                newPassword: { type: graphql_1.GraphQLString },
             },
         },
     },

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.update = exports.deleteCrud = exports.getById = exports.create = exports.get = exports.login = exports.register = void 0;
+exports.updateUsername = exports.update = exports.deleteCrud = exports.getById = exports.create = exports.get = exports.login = exports.register = void 0;
 var register_1 = require("./register");
 Object.defineProperty(exports, "register", { enumerable: true, get: function () { return __importDefault(register_1).default; } });
 var login_1 = require("./login");
@@ -18,3 +18,5 @@ var delete_1 = require("./delete");
 Object.defineProperty(exports, "deleteCrud", { enumerable: true, get: function () { return __importDefault(delete_1).default; } });
 var update_1 = require("./update");
 Object.defineProperty(exports, "update", { enumerable: true, get: function () { return __importDefault(update_1).default; } });
+var updateUsername_1 = require("./updateUsername");
+Object.defineProperty(exports, "updateUsername", { enumerable: true, get: function () { return __importDefault(updateUsername_1).default; } });

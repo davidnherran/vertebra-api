@@ -83,4 +83,13 @@ export default class AuthServices {
     );
     return updatedUSername;
   }
+
+  public async updatePassword(id: number, newpassword: string) {
+    const hashedPassword = await bcrypt.hash(newpassword, 10);
+    const updatePassword = await this.postgresLib.updatePassword(
+      id,
+      hashedPassword
+    );
+    return updatePassword;
+  }
 }
