@@ -85,5 +85,11 @@ class AuthServices {
             return updatePassword;
         });
     }
+    deleteUser(userdb) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deletedUser = yield this.postgresLib.deleteUser(userdb.id);
+            return deletedUser;
+        });
+    }
 }
 exports.default = AuthServices;

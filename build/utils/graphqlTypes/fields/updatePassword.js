@@ -14,33 +14,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const auth_1 = __importDefault(require("../../../services/auth"));
-const autService = new auth_1.default();
+const authService = new auth_1.default();
 exports.default = {
     type: new graphql_1.GraphQLObjectType({
-        name: 'UpdateUsername',
+        name: 'UpdatePassword',
         fields: {
             message: { type: graphql_1.GraphQLString },
-            newUsername: { type: graphql_1.GraphQLString },
-            token: { type: graphql_1.GraphQLString },
             affected: { type: graphql_1.GraphQLInt },
         },
     }),
-    description: 'update username',
-    args: {
-        newUsername: { type: graphql_1.GraphQLString },
-    },
+    description: 'update password',
     resolve(_, args, context) {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = context();
             if (!auth.user)
                 throw new Error('UNHAUTORIZED');
-            const newusername = yield autService.updateUsername(args.newUsername, auth.user.username, auth.user);
+            const newPassword = yield authService.updatePassword(auth.user.id, args.newPassword);
+            console.log(newPassword);
             return {
-                message: 'updated username',
-                newUsername: `your username changed from ${auth.user.username} from ${args.newUsername}`,
-                affected: newusername.data.affected,
-                token: newusername.newtoken,
+                message: `updated password of the user with identifier ${auth.user.id} and username ${auth.user.username}`,
+                affected: newPassword.affected,
             };
         });
+    },
+    args: {
+        newPassword: { type: graphql_1.GraphQLString },
     },
 };

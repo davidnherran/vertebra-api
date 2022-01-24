@@ -92,4 +92,9 @@ export default class AuthServices {
     );
     return updatePassword;
   }
+
+  public async deleteUser(userdb: UserDB) {
+    const deletedUser = await this.postgresLib.deleteUser(userdb.id);
+    return deletedUser;
+  }
 }

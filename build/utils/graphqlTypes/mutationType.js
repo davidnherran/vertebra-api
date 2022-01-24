@@ -26,30 +26,18 @@ exports.default = new graphql_1.GraphQLObjectType({
         delete: fields_1.deleteCrud,
         update: fields_1.update,
         updateUsername: fields_1.updateUsername,
-        updatePassword: {
-            type: new graphql_1.GraphQLObjectType({
-                name: 'UpdatePassword',
-                fields: {
-                    message: { type: graphql_1.GraphQLString },
-                    affected: { type: graphql_1.GraphQLInt },
-                },
-            }),
-            description: 'update password',
-            resolve(_, args, context) {
+        updatePassword: fields_1.updatePassword,
+        deleteUser: {
+            type: graphql_1.GraphQLString,
+            description: 'delete user',
+            resolve(_, _a, context) {
                 return __awaiter(this, void 0, void 0, function* () {
                     const auth = context();
                     if (!auth.user)
                         throw new Error('UNHAUTORIZED');
-                    const newPassword = yield authService.updatePassword(auth.user.id, args.newPassword);
-                    console.log(newPassword);
-                    return {
-                        message: `updated password of the user with identifier ${auth.user.id} and username ${auth.user.username}`,
-                        affected: newPassword.affected,
-                    };
+                    yield authService.deleteUser(auth.user);
+                    return `user with identifier ${auth.user.id} and username ${auth.user.username} removed`;
                 });
-            },
-            args: {
-                newPassword: { type: graphql_1.GraphQLString },
             },
         },
     },

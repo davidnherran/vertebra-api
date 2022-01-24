@@ -3,7 +3,6 @@ import AutService from '../../../services/auth';
 import JWT from '../../auth/jwt';
 
 const autService = new AutService();
-const jwt = new JWT();
 export default {
   type: new GraphQLObjectType({
     name: 'UpdateUsername',
