@@ -31,6 +31,13 @@ export default class AuthServices {
     };
   }
 
+  public get GetArgsDelete() {
+    return {
+      id: { type: GraphQLInt },
+      controller: { type: GraphQLString },
+    };
+  }
+
   public get getArgsCreate() {
     return {
       controller: { type: GraphQLString },
@@ -116,8 +123,12 @@ export default class AuthServices {
 
   public async getById(id: number, controller: string) {
     const data = await this.postgresLib.findById(controller, id);
-    if(!data) throw new Error(`ÌDENTIFIER_${id}_NOT_EXIST`)
     return { value: data, message: `${controller} data` };
+  }
+
+  public async delete(id: number, controller: string) {
+    const deletedData = await this.postgresLib.delete(controller, id);
+    return deletedData
   }
 
   /*

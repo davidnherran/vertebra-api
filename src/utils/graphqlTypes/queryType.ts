@@ -21,7 +21,6 @@ export default new GraphQLObjectType({
   description: 'The root query type',
   fields: {
     get,
-    create,
     getById,
   },
 });

@@ -80,26 +80,44 @@ class PostgresLib {
     }
     get(entitye, limit) {
         return __awaiter(this, void 0, void 0, function* () {
-            const entityeResolve = this.entitiesCrud.get(entitye);
-            if (!entityeResolve)
+            const entityResolve = this.entitiesCrud.get(entitye);
+            if (!entityResolve)
                 throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
-            return yield (entityeResolve === null || entityeResolve === void 0 ? void 0 : entityeResolve.findAll(limit));
+            return yield (entityResolve === null || entityResolve === void 0 ? void 0 : entityResolve.findAll(limit));
         });
     }
     create(entity, data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const entityeResolve = this.entitiesCrud.get(entity);
-            if (!entityeResolve)
+            const entityResolve = this.entitiesCrud.get(entity);
+            if (!entityResolve)
                 throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
-            return yield entityeResolve.create(data);
+            return yield entityResolve.create(data);
         });
     }
     findById(entity, id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const entityeResolve = this.entitiesCrud.get(entity);
-            if (!entityeResolve)
+            const entityResolve = this.entitiesCrud.get(entity);
+            if (!entityResolve)
                 throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
-            return yield entityeResolve.findById(id);
+            const data = yield entityResolve.findById(id);
+            if (!data)
+                throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+            return data;
+        });
+    }
+    delete(entity, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const entityResolve = this.entitiesCrud.get(entity);
+            if (!entityResolve)
+                throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
+            const deletedData = yield entityResolve.delete(id);
+            if (deletedData.affected !== 1)
+                throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+            return {
+                affected: deletedData.affected,
+                idDeleted: id,
+                message: `Data removed from ${entity}`,
+            };
         });
     }
 }

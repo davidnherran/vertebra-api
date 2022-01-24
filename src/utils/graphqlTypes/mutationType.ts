@@ -1,7 +1,12 @@
 import {
+  GraphQLInt,
   GraphQLObjectType,
+  GraphQLString,
+  GraphQLUnionType,
 } from 'graphql';
-import { register, login } from './fields';
+import { register, login, create, delete as deleteCrud } from './fields';
+import Service from '../../services/service';
+const service = new Service();
 
 export default new GraphQLObjectType({
   name: 'MutationType',
@@ -9,5 +14,7 @@ export default new GraphQLObjectType({
   fields: {
     register,
     login,
+    create,
+    delete: deleteCrud,
   },
 });

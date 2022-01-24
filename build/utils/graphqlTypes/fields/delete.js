@@ -15,26 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const service_1 = __importDefault(require("../../../services/service"));
 const service = new service_1.default();
-const myCustomTypes_1 = require("./myCustomTypes");
 exports.default = {
-    type: new graphql_1.GraphQLUnionType({
-        name: 'CreateEpisodeOrCharacterOrLocation',
-        types: [myCustomTypes_1.CreatedLocation, myCustomTypes_1.CreatedCharacter, myCustomTypes_1.CreatedEpisode],
-        resolveType(value) {
-            if (value.message === 'locations created')
-                return 'CreatedLocation';
-            if (value.message === 'characters created')
-                return 'CreatedCharacter';
-            if (value.message === 'episodes created')
-                return 'CreatedEpisode';
+    type: new graphql_1.GraphQLObjectType({
+        name: 'DeletedCharacter',
+        fields: {
+            idDeleted: { type: graphql_1.GraphQLInt },
+            affected: { type: graphql_1.GraphQLInt },
+            message: { type: graphql_1.GraphQLString },
         },
     }),
+    description: 'Filtered location list',
     resolve(_, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(args[args.controller]);
-            const created = yield service.create(args[args.controller], args.controller);
-            return created;
+            const deletedData = yield service.delete(args.id, args.controller);
+            return deletedData;
         });
     },
-    args: service.getArgsCreate,
+    args: service.GetArgsDelete,
 };

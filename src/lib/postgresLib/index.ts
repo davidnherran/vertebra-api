@@ -73,24 +73,39 @@ export class PostgresLib {
   }
 
   public async get(entitye: string, limit: number[]) {
-    const entityeResolve = this.entitiesCrud.get(entitye);
-    if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
-    return await entityeResolve?.findAll(limit);
+    const entityResolve = this.entitiesCrud.get(entitye);
+    if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    return await entityResolve?.findAll(limit);
   }
 
   public async create(
     entity: string,
     data: LocationsCreate & CharactersCreate & EpisodesCreate
   ) {
-    const entityeResolve = this.entitiesCrud.get(entity);
-    if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
-    return await entityeResolve.create(data);
+    const entityResolve = this.entitiesCrud.get(entity);
+    if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    return await entityResolve.create(data);
   }
 
   public async findById(entity: string, id: number) {
-    const entityeResolve = this.entitiesCrud.get(entity);
-    if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
-    return await entityeResolve.findById(id);
+    const entityResolve = this.entitiesCrud.get(entity);
+    if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    const data = await entityResolve.findById(id);
+    if (!data) throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+    return data;
+  }
+
+  public async delete(entity: string, id: number) {
+    const entityResolve = this.entitiesCrud.get(entity);
+    if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    const deletedData = await entityResolve.delete(id);
+    if (deletedData.affected !== 1)
+      throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+    return {
+      affected: deletedData.affected,
+      idDeleted: id,
+      message: `Data removed from ${entity}`,
+    };
   }
 
   /*

@@ -12,7 +12,6 @@ exports.default = new graphql_1.GraphQLObjectType({
     description: 'The root query type',
     fields: {
         get: fields_1.get,
-        create: fields_1.create,
         getById: fields_1.getById,
     },
 });

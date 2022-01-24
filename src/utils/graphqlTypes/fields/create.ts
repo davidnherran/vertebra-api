@@ -16,7 +16,6 @@ export default {
       if (value.message === 'locations created') return 'CreatedLocation';
       if (value.message === 'characters created') return 'CreatedCharacter';
       if (value.message === 'episodes created') return 'CreatedEpisode';
-      return 'CreatedLocation';
     },
   }),
   async resolve(_: any, args: any) {

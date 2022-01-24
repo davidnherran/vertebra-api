@@ -33,6 +33,12 @@ class AuthServices {
             },
         };
     }
+    get GetArgsDelete() {
+        return {
+            id: { type: graphql_1.GraphQLInt },
+            controller: { type: graphql_1.GraphQLString },
+        };
+    }
     get getArgsCreate() {
         return {
             controller: { type: graphql_1.GraphQLString },
@@ -117,9 +123,13 @@ class AuthServices {
     getById(id, controller) {
         return __awaiter(this, void 0, void 0, function* () {
             const data = yield this.postgresLib.findById(controller, id);
-            if (!data)
-                throw new Error(`ÌDENTIFIER_${id}_NOT_EXIST`);
             return { value: data, message: `${controller} data` };
+        });
+    }
+    delete(id, controller) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const deletedData = yield this.postgresLib.delete(controller, id);
+            return deletedData;
         });
     }
 }
