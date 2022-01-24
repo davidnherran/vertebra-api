@@ -5,6 +5,7 @@ import {
   GetByIdLocationType,
 } from './myCustomTypes';
 import Service from '../../../services/service';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 const service = new Service();
 
 export default {
@@ -17,11 +18,10 @@ export default {
       if (value.message === 'episodes data') return 'GetByIdEpisode';
     },
   }),
-  async resolve(_: any, args: any, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNAHUTORIZED');
+  async resolve(_: undefined, args: ArgsCrud, context: Function) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const data = await service.getById(args.id, args.controller);
-    console.log(data);
     return data;
   },
   args: service.getArgsGetById,

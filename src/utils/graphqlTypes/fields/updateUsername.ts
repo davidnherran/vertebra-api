@@ -1,6 +1,6 @@
 import { GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import AutService from '../../../services/auth';
-import JWT from '../../auth/jwt';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 
 const autService = new AutService();
 export default {
@@ -17,14 +17,16 @@ export default {
   args: {
     newUsername: { type: GraphQLString },
   },
-  async resolve(_: any, args: any, context: Function) {
-    const auth = context();
-    if (!auth.user)
-      throw new Error('UNHAUTORIZED');
+  async resolve(
+    _: undefined,
+    args: { newUsername: string },
+    context: Function
+  ) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const newusername = await autService.updateUsername(
       args.newUsername,
-      auth.user.username,
-      auth.user
+      auth.user.username
     );
     return {
       message: 'updated username',

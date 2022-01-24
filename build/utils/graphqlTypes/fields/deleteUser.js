@@ -15,33 +15,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const auth_1 = __importDefault(require("../../../services/auth"));
 const codes_1 = require("../../handlerErrors/codes");
-const autService = new auth_1.default();
+const authService = new auth_1.default();
 exports.default = {
-    type: new graphql_1.GraphQLObjectType({
-        name: 'UpdateUsername',
-        fields: {
-            message: { type: graphql_1.GraphQLString },
-            newUsername: { type: graphql_1.GraphQLString },
-            token: { type: graphql_1.GraphQLString },
-            affected: { type: graphql_1.GraphQLInt },
-        },
-    }),
-    description: 'update username',
-    args: {
-        newUsername: { type: graphql_1.GraphQLString },
-    },
-    resolve(_, args, context) {
+    type: graphql_1.GraphQLString,
+    description: 'delete user',
+    resolve(_, _a, context) {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = context();
             if (!auth.user)
                 throw new Error(codes_1.UNAUTHORIZED);
-            const newusername = yield autService.updateUsername(args.newUsername, auth.user.username);
-            return {
-                message: 'updated username',
-                newUsername: `your username changed from ${auth.user.username} from ${args.newUsername}`,
-                affected: newusername.data.affected,
-                token: newusername.newtoken,
-            };
+            yield authService.deleteUser(auth.user);
+            return `user with identifier ${auth.user.id} and username ${auth.user.username} removed`;
         });
     },
 };

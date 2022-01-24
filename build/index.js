@@ -14,14 +14,16 @@ const context = (req) => {
     const { authorization: token } = req.headers;
     return jwt.validateToken(token);
 };
-app.use('/graphql', (0, express_graphql_1.graphqlHTTP)((req) => ({
-    schema: graphql_1.default,
-    graphiql: config_1.envConfig.dev,
-    customFormatErrorFn(err) {
-        return {
-            message: err.message,
-        };
-    },
-    context: () => context(req),
-})));
+app.use('/graphql', (0, express_graphql_1.graphqlHTTP)((req) => {
+    return {
+        schema: graphql_1.default,
+        graphiql: config_1.envConfig.dev,
+        customFormatErrorFn(err) {
+            return {
+                message: err.message,
+            };
+        },
+        context: () => context(req),
+    };
+}));
 app.listen(config_1.envConfig.port, () => console.log(`🚀 server listening on port ${config_1.envConfig.port}`));

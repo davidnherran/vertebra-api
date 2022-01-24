@@ -1,5 +1,6 @@
 import { GraphQLUnionType } from 'graphql';
 import Service from '../../../services/service';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 
 const service = new Service();
 import {
@@ -18,9 +19,9 @@ export default {
       if (value.message === 'episodes created') return 'CreatedEpisode';
     },
   }),
-  async resolve(_: any, args: any, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNAHUTORIZED');
+  async resolve(_: undefined, args: any, context: Function) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const created = await service.create(
       args[args.controller],
       args.controller

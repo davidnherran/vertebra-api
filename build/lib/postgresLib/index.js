@@ -59,11 +59,9 @@ class PostgresLib {
             return yield this.users.save();
         });
     }
-    updateUsername(newusername, oldusername, userdb) {
+    updateUsername(newusername, oldusername) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log({ newusername, oldusername });
             const user = yield this.users.findByUsername(oldusername);
-            console.log(user);
             if (!user)
                 throw new Error(codes_1.INCORRECT_USERNAME);
             const data = yield this.users.updateUsername(user === null || user === void 0 ? void 0 : user.id, newusername);

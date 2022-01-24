@@ -1,5 +1,6 @@
 import { GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import Service from '../../../services/service';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 
 const service = new Service();
 
@@ -13,9 +14,9 @@ export default {
     },
   }),
   description: 'Filtered location list',
-  async resolve(_: any, args: any, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNAHUTORIZED');
+  async resolve(_: undefined, args: ArgsCrud, context: Function) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const deletedData = await service.delete(args.id, args.controller);
     return deletedData;
   },

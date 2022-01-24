@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken';
 import { envConfig } from '../../config';
-//import AuthServices from '../../services/auth';
 
 export default class JWT {
   private secretKey: string;

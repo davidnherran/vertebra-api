@@ -60,11 +60,8 @@ export class PostgresLib {
   public async updateUsername(
     newusername: string,
     oldusername: string,
-    userdb: UserDB
   ) {
-    console.log({ newusername, oldusername });
     const user = await this.users.findByUsername(oldusername);
-    console.log(user);
     if (!user) throw new Error(INCORRECT_USERNAME);
     const data = await this.users.updateUsername(user?.id!, newusername);
     const newtoken = this.jwt.generateJWT({
@@ -141,19 +138,4 @@ export class PostgresLib {
       idUpdated: id,
     };
   }
-
-  /*public async update(repository: string, id: number, newdata: object) {
-    const connect = await this.connection;
-    const data = await connect
-      .getCustomRepository(
-        repository === 'LocationsRepository'
-          ? LocationsRepository
-          : repository === 'CharactersRepository'
-          ? CharactersRepository
-          : EpisodesRepository
-      )
-      .update(id, newdata);
-    connect.close();
-    return data;
-  }*/
 }

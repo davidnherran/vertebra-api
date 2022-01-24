@@ -1,5 +1,6 @@
 import { GraphQLUnionType } from 'graphql';
 import Service from '../../../services/service';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 import { CharactersTypes, EpisodesTypes, LocationTypes } from './myCustomTypes';
 
 const service = new Service();
@@ -15,9 +16,9 @@ export default {
     },
   }),
   description: 'Filtered location list',
-  async resolve(_: any, args: Get, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNAHUTORIZED');
+  async resolve(_: undefined, args: Get, context: Function) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     return await service.getAll(args.limit, args.controller);
   },
   args: service.getArgsGetAll,

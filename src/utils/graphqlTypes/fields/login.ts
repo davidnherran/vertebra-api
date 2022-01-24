@@ -8,9 +8,8 @@ const jwt = new JWT();
 export default {
   type: GraphQLString,
   description: 'Login of the user and returns the token',
-  async resolve(_: any, args: SignIn) {
+  async resolve(_: undefined, args: SignIn) {
     const user = await authServices.loginUser(args.username, args.password);
-    if (typeof user === 'string') throw new Error(user);
     return jwt.generateJWT({ user });
   },
   args: authServices.argsLoginUser,

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const myCustomTypes_1 = require("./myCustomTypes");
 const service_1 = __importDefault(require("../../../services/service"));
+const codes_1 = require("../../handlerErrors/codes");
 const service = new service_1.default();
 exports.default = {
     type: new graphql_1.GraphQLUnionType({
@@ -35,9 +36,8 @@ exports.default = {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = context();
             if (!auth.user)
-                throw new Error('UNAHUTORIZED');
+                throw new Error(codes_1.UNAUTHORIZED);
             const data = yield service.getById(args.id, args.controller);
-            console.log(data);
             return data;
         });
     },

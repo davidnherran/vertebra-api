@@ -210,11 +210,4 @@ export default class AuthServices {
     const updatedData = await this.postgresLib.update(controller, id, newdata);
     return updatedData;
   }
-
-  /*public async update(id: number, newdata: object, controller: string) {
-    const exectIn = this.hastable.get(controller);
-    if (!exectIn) return CONTROLLER_IS_REQUIRED;
-    //const updatedData = await this.postgresLib.update(controller, id, newdata);
-    return 'updatedData';
-  }*/
 }

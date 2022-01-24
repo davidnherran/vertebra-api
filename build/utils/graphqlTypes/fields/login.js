@@ -23,8 +23,6 @@ exports.default = {
     resolve(_, args) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield authServices.loginUser(args.username, args.password);
-            if (typeof user === 'string')
-                throw new Error(user);
             return jwt.generateJWT({ user });
         });
     },

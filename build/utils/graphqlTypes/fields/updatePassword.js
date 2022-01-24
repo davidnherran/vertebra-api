@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const auth_1 = __importDefault(require("../../../services/auth"));
+const codes_1 = require("../../handlerErrors/codes");
 const authService = new auth_1.default();
 exports.default = {
     type: new graphql_1.GraphQLObjectType({
@@ -28,9 +29,8 @@ exports.default = {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = context();
             if (!auth.user)
-                throw new Error('UNHAUTORIZED');
+                throw new Error(codes_1.UNAUTHORIZED);
             const newPassword = yield authService.updatePassword(auth.user.id, args.newPassword);
-            console.log(newPassword);
             return {
                 message: `updated password of the user with identifier ${auth.user.id} and username ${auth.user.username}`,
                 affected: newPassword.affected,

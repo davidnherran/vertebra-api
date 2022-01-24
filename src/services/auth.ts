@@ -54,10 +54,10 @@ export default class AuthServices {
   public async loginUser(username: string, password: string) {
     const user = await this.postgresLib.existUser(username);
     if (!user) {
-      return INCORRECT_USERNAME;
+      throw new Error(INCORRECT_USERNAME);
     }
     if (!(await bcrypt.compare(password, user.password!))) {
-      return INCORRECT_PASSWORD;
+      throw new Error(INCORRECT_PASSWORD);
     }
     delete user.password;
 
@@ -69,17 +69,12 @@ export default class AuthServices {
     return user;
   }
 
-  public async updateUsername(
-    newUSername: string,
-    oldUsername: string,
-    userdb: UserDB
-  ) {
+  public async updateUsername(newUSername: string, oldUsername: string) {
     const user = await this.getUser(newUSername);
     if (user) throw new Error(USERNAME_IS_ALREADY_IN_USE);
     const updatedUSername = await this.postgresLib.updateUsername(
       newUSername,
-      oldUsername,
-      userdb
+      oldUsername
     );
     return updatedUSername;
   }

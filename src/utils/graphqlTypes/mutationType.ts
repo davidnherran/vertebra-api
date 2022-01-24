@@ -1,4 +1,4 @@
-import { GraphQLObjectType, GraphQLString } from 'graphql';
+import { GraphQLObjectType } from 'graphql';
 import {
   register,
   login,
@@ -7,10 +7,8 @@ import {
   update,
   updateUsername,
   updatePassword,
+  deleteUser,
 } from './fields';
-import AuthService from '../../services/auth';
-
-const authService = new AuthService();
 export default new GraphQLObjectType({
   name: 'MutationType',
   description: 'The root mutation type',
@@ -22,15 +20,6 @@ export default new GraphQLObjectType({
     update,
     updateUsername,
     updatePassword,
-    deleteUser: {
-      type: GraphQLString,
-      description: 'delete user',
-      async resolve(_, _a, context: Function) {
-        const auth = context();
-        if (!auth.user) throw new Error('UNHAUTORIZED');
-        await authService.deleteUser(auth.user);
-        return `user with identifier ${auth.user.id} and username ${auth.user.username} removed`;
-      },
-    },
+    deleteUser,
   },
 });

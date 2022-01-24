@@ -54,10 +54,10 @@ class AuthServices {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.postgresLib.existUser(username);
             if (!user) {
-                return codes_1.INCORRECT_USERNAME;
+                throw new Error(codes_1.INCORRECT_USERNAME);
             }
             if (!(yield bcryptjs_1.default.compare(password, user.password))) {
-                return codes_1.INCORRECT_PASSWORD;
+                throw new Error(codes_1.INCORRECT_PASSWORD);
             }
             delete user.password;
             return user;
@@ -69,12 +69,12 @@ class AuthServices {
             return user;
         });
     }
-    updateUsername(newUSername, oldUsername, userdb) {
+    updateUsername(newUSername, oldUsername) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.getUser(newUSername);
             if (user)
                 throw new Error(codes_1.USERNAME_IS_ALREADY_IN_USE);
-            const updatedUSername = yield this.postgresLib.updateUsername(newUSername, oldUsername, userdb);
+            const updatedUSername = yield this.postgresLib.updateUsername(newUSername, oldUsername);
             return updatedUSername;
         });
     }

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const service_1 = __importDefault(require("../../../services/service"));
+const codes_1 = require("../../handlerErrors/codes");
 const service = new service_1.default();
 const myCustomTypes_1 = require("./myCustomTypes");
 exports.default = {
@@ -33,7 +34,7 @@ exports.default = {
         return __awaiter(this, void 0, void 0, function* () {
             const auth = context();
             if (!auth.user)
-                throw new Error('UNAHUTORIZED');
+                throw new Error(codes_1.UNAUTHORIZED);
             const created = yield service.create(args[args.controller], args.controller);
             return created;
         });

@@ -108,3 +108,8 @@ interface CharactersUpdate {
   url?: string;
   created?: string;
 }
+
+interface ArgsCrud {
+  id: number;
+  controller: string;
+}

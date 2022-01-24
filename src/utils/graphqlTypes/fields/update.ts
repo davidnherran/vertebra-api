@@ -1,5 +1,6 @@
 import { GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import Service from '../../../services/service';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 
 const service = new Service();
 
@@ -12,16 +13,14 @@ export default {
       message: { type: GraphQLString },
     },
   }),
-  async resolve(_: any, args: any, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNAHUTORIZED');
-    console.log(args[args.controller]);
+  async resolve(_: undefined, args: any, context: Function) {
+    const auth: { user: UserDB }  = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const updated = await service.update(
       args.id,
       args.controller,
       args[args.controller]
     );
-    console.log(updated);
     return updated;
   },
   args: service.getArgsUpdate,

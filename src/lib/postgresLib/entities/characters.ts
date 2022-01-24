@@ -1,4 +1,3 @@
-import { Console } from 'console';
 import { Entity, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm';
 
 @Entity({ name: 'characters' })

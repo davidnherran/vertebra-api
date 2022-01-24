@@ -1,5 +1,6 @@
 import { GraphQLInt, GraphQLObjectType, GraphQLString } from 'graphql';
 import AuthService from '../../../services/auth';
+import { UNAUTHORIZED } from '../../handlerErrors/codes';
 
 const authService = new AuthService();
 
@@ -12,14 +13,17 @@ export default {
     },
   }),
   description: 'update password',
-  async resolve(_: any, args: any, context: any) {
-    const auth = context();
-    if (!auth.user) throw new Error('UNHAUTORIZED');
+  async resolve(
+    _: undefined,
+    args: { newPassword: string },
+    context: Function
+  ) {
+    const auth: { user: UserDB } = context();
+    if (!auth.user) throw new Error(UNAUTHORIZED);
     const newPassword = await authService.updatePassword(
       auth.user.id,
       args.newPassword
     );
-    console.log(newPassword);
     return {
       message: `updated password of the user with identifier ${auth.user.id} and username ${auth.user.username}`,
       affected: newPassword.affected,
