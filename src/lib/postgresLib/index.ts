@@ -9,6 +9,7 @@ import {
   INCORRECT_USERNAME,
   CONTROLLER_IS_REQUIRED,
 } from '../../utils/handlerErrors/codes';
+import JWT from '../../utils/auth/jwt';
 export class PostgresLib {
   public connection: Promise<Connection>;
   private users: Users;
@@ -16,6 +17,7 @@ export class PostgresLib {
   private location: Locations;
   private characters: Characters;
   private episodes: Episodes;
+  private jwt: JWT;
   constructor() {
     this.connection = createConnection({
       type: 'postgres',
@@ -35,6 +37,7 @@ export class PostgresLib {
       .set('locations', this.location)
       .set('characters', this.characters)
       .set('episodes', this.episodes);
+    this.jwt = new JWT();
   }
 
   public async existUser(username: string) {
@@ -54,10 +57,24 @@ export class PostgresLib {
     return await this.users.save();
   }
 
-  public async updateUsername(newusername: string, oldusername: string) {
+  public async updateUsername(
+    newusername: string,
+    oldusername: string,
+    userdb: UserDB
+  ) {
+    console.log({ newusername, oldusername });
     const user = await this.users.findByUsername(oldusername);
+    console.log(user);
     if (!user) throw new Error(INCORRECT_USERNAME);
-    return await this.users.updateUsername(user?.id!, newusername);
+    const data = await this.users.updateUsername(user?.id!, newusername);
+    const newtoken = this.jwt.generateJWT({
+      user: {
+        id: user.id,
+        displayName: user.displayName,
+        username: newusername,
+      },
+    });
+    return { newtoken, data };
   }
 
   public async updatePassword(id: number, newpassword: string) {

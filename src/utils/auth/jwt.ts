@@ -18,10 +18,10 @@ export default class JWT {
 
   validateToken(token: string) {
     if (!token) return { user: false };
-    const payload: any = jwt.verify(
+    const payload = jwt.verify(
       token.split(' ')[1],
       envConfig.jwtSecretKey!
-    );
+    ) as { user: UserDB };
     return { user: payload.user };
   }
 }

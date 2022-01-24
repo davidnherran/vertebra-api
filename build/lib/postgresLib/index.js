@@ -8,6 +8,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostgresLib = void 0;
 const typeorm_1 = require("typeorm");
@@ -17,6 +20,7 @@ const episodes_1 = require("./entities/episodes");
 const locations_1 = require("./entities/locations");
 const index_1 = require("../../config/index");
 const codes_1 = require("../../utils/handlerErrors/codes");
+const jwt_1 = __importDefault(require("../../utils/auth/jwt"));
 class PostgresLib {
     constructor() {
         this.connection = (0, typeorm_1.createConnection)({
@@ -37,6 +41,7 @@ class PostgresLib {
             .set('locations', this.location)
             .set('characters', this.characters)
             .set('episodes', this.episodes);
+        this.jwt = new jwt_1.default();
     }
     existUser(username) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -54,12 +59,22 @@ class PostgresLib {
             return yield this.users.save();
         });
     }
-    updateUsername(newusername, oldusername) {
+    updateUsername(newusername, oldusername, userdb) {
         return __awaiter(this, void 0, void 0, function* () {
+            console.log({ newusername, oldusername });
             const user = yield this.users.findByUsername(oldusername);
+            console.log(user);
             if (!user)
                 throw new Error(codes_1.INCORRECT_USERNAME);
-            return yield this.users.updateUsername(user === null || user === void 0 ? void 0 : user.id, newusername);
+            const data = yield this.users.updateUsername(user === null || user === void 0 ? void 0 : user.id, newusername);
+            const newtoken = this.jwt.generateJWT({
+                user: {
+                    id: user.id,
+                    displayName: user.displayName,
+                    username: newusername,
+                },
+            });
+            return { newtoken, data };
         });
     }
     updatePassword(id, newpassword) {

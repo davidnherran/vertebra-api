@@ -69,5 +69,14 @@ class AuthServices {
             return user;
         });
     }
+    updateUsername(newUSername, oldUsername, userdb) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const user = yield this.getUser(newUSername);
+            if (user)
+                throw new Error(codes_1.USERNAME_IS_ALREADY_IN_USE);
+            const updatedUSername = yield this.postgresLib.updateUsername(newUSername, oldUsername, userdb);
+            return updatedUSername;
+        });
+    }
 }
 exports.default = AuthServices;

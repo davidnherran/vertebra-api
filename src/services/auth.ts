@@ -4,6 +4,7 @@ import { PostgresLib } from '../lib/postgresLib';
 import {
   INCORRECT_USERNAME,
   INCORRECT_PASSWORD,
+  USERNAME_IS_ALREADY_IN_USE,
 } from '../utils/handlerErrors/codes';
 export default class AuthServices {
   private postgresLib: PostgresLib;
@@ -66,5 +67,20 @@ export default class AuthServices {
   public async getUser(username: string) {
     const user = await this.postgresLib.existUser(username);
     return user;
+  }
+
+  public async updateUsername(
+    newUSername: string,
+    oldUsername: string,
+    userdb: UserDB
+  ) {
+    const user = await this.getUser(newUSername);
+    if (user) throw new Error(USERNAME_IS_ALREADY_IN_USE);
+    const updatedUSername = await this.postgresLib.updateUsername(
+      newUSername,
+      oldUsername,
+      userdb
+    );
+    return updatedUSername;
   }
 }
