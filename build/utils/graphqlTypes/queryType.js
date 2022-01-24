@@ -14,33 +14,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const service_1 = __importDefault(require("../../services/service"));
+const fields_1 = require("./fields");
 const myCustomTypes_1 = require("./fields/myCustomTypes");
 const service = new service_1.default();
 exports.default = new graphql_1.GraphQLObjectType({
     name: 'QueryType',
     description: 'The root query type',
     fields: {
-        get: {
+        get: fields_1.get,
+        create: {
             type: new graphql_1.GraphQLUnionType({
-                name: 'UnionTypesCrud',
-                types: [myCustomTypes_1.LocationTypes, myCustomTypes_1.CharactersTypes, myCustomTypes_1.EpisodesTypes],
+                name: 'CreateEpisodeOrCharacterOrLocation',
+                types: [myCustomTypes_1.CreatedLocation, myCustomTypes_1.CreatedCharacter, myCustomTypes_1.CreatedEpisode],
                 resolveType(value) {
-                    console.log(value.message);
-                    if (value.message === 'locations data')
-                        return 'LocationTypes';
-                    if (value.message === 'characters data')
-                        return 'CharactersTypes';
-                    if (value.message === 'episodes data')
-                        return 'EpisodesTypes';
+                    if (value.message === 'locations created')
+                        return 'CreatedLocation';
+                    if (value.message === 'characters created')
+                        return 'CreatedCharacter';
+                    if (value.message === 'episodes created')
+                        return 'CreatedEpisode';
+                    return 'CreatedLocation';
                 },
             }),
-            description: 'Filtered location list',
             resolve(_, args) {
                 return __awaiter(this, void 0, void 0, function* () {
-                    return yield service.getAll(args.limit, args.controller);
+                    console.log(args[args.controller]);
+                    const created = yield service.create(args[args.controller], args.controller);
+                    return created;
                 });
             },
-            args: service.getArgs,
+            args: service.getArgsCreate,
         },
     },
 });

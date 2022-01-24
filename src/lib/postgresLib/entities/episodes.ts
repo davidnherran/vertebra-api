@@ -51,4 +51,19 @@ export class Episodes extends BaseEntity {
       .execute();
   }
 
+  async create(data: EpisodesCreate) {
+    const created = await Episodes.createQueryBuilder('episodes')
+      .insert()
+      .into(Episodes)
+      .values({
+        name: data.name,
+        air_date: data.air_date,
+        episode: data.episode,
+        characters: data.characters,
+        url: data.url,
+        created: data.created,
+      })
+      .execute();
+    return created.raw[0];
+  }
 }

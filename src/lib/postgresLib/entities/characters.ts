@@ -79,4 +79,25 @@ export class Characters extends BaseEntity {
       .where('characters.id = :id', { id })
       .execute();
   }
+
+  async create(data: CharactersCreate) {
+    const created = await Characters.createQueryBuilder('characters')
+      .insert()
+      .into(Characters)
+      .values({
+        name: data.name,
+        type: data.type,
+        status: data.status,
+        species: data.species,
+        gender: data.gender,
+        origin: data.origin,
+        location: data.location,
+        image: data.image,
+        episode: data.episode,
+        url: data.created,
+        created: data.created,
+      })
+      .execute();
+    return created.raw[0];
+  }
 }

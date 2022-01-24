@@ -17,11 +17,6 @@ const episodes_1 = require("./entities/episodes");
 const locations_1 = require("./entities/locations");
 const index_1 = require("../../config/index");
 const codes_1 = require("../../utils/handlerErrors/codes");
-class LocationsArr {
-    constructor() {
-        (this.value = []), (this.message = '');
-    }
-}
 class PostgresLib {
     constructor() {
         this.connection = (0, typeorm_1.createConnection)({
@@ -89,6 +84,14 @@ class PostgresLib {
             if (!entityeResolve)
                 throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
             return yield (entityeResolve === null || entityeResolve === void 0 ? void 0 : entityeResolve.findAll(limit));
+        });
+    }
+    create(entity, data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const entityeResolve = this.entitiesCrud.get(entity);
+            if (!entityeResolve)
+                throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
+            return yield entityeResolve.create(data);
         });
     }
 }

@@ -1,26 +1,14 @@
-import { createConnection, Connection, EntitySchema } from 'typeorm';
+import { createConnection, Connection } from 'typeorm';
 import { Users } from './entities/users';
 import { Characters } from './entities/characters';
 import { Episodes } from './entities/episodes';
 import { Locations } from './entities/locations';
-//import { UsersRepository } from './repositories/users-repository';
-//import { LocationsRepository } from './repositories/locations-repository';
-//import { CharactersRepository } from './repositories/characters-repository';
-//import { EpisodesRepository } from './repositories/episodes-repository';
 import { envConfig } from '../../config/index';
 import {
   USERNAME_IS_ALREADY_IN_USE,
   INCORRECT_USERNAME,
   CONTROLLER_IS_REQUIRED,
 } from '../../utils/handlerErrors/codes';
-class LocationsArr {
-  value: Array<Locations>;
-  message: string;
-  constructor() {
-    (this.value = []), (this.message = '');
-  }
-}
-
 export class PostgresLib {
   public connection: Promise<Connection>;
   private users: Users;
@@ -88,6 +76,15 @@ export class PostgresLib {
     const entityeResolve = this.entitiesCrud.get(entitye);
     if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
     return await entityeResolve?.findAll(limit);
+  }
+
+  public async create(
+    entity: string,
+    data: LocationsCreate & CharactersCreate & EpisodesCreate
+  ) {
+    const entityeResolve = this.entitiesCrud.get(entity);
+    if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    return await entityeResolve.create(data);
   }
 
   /*

@@ -35,14 +35,47 @@ interface Get {
   controller: string;
 }
 
-interface LocationsContent {
-  id: !number;
+interface LocationsCreate {
   name: !string;
   type: !string;
   dimension: !string;
-  resident: !Array<string>;
+  residents: !Array<string>;
+  url: !string;
+  created: !string;
+}
+interface LocationsCreate {
+  name: !string;
+  type: !string;
+  dimension: !string;
+  residents: !Array<string>;
+  url: !string;
+  created: !string;
+}
+interface EpisodesCreate {
+  name: !string;
+  air_date: !string;
+  episode: !string;
+  characters: !Array<string>;
   url: !string;
   created: !string;
 }
 
-type LocationsResponse = { location: Array<LocationsContent> };
+interface CharactersCreate {
+  name: string;
+  type: string;
+  status: string;
+  species: string;
+  gender: string;
+  origin: {
+    name: string;
+    url: string;
+  };
+  location: {
+    name: string;
+    url: string;
+  };
+  image: string;
+  episode: string[];
+  url: string;
+  created: string;
+}

@@ -1,31 +1,37 @@
-import {
-  GraphQLObjectType,
-  GraphQLUnionType,
-} from 'graphql';
+import { GraphQLObjectType, GraphQLUnionType } from 'graphql';
 import Service from '../../services/service';
-import { CharactersTypes, LocationTypes, EpisodesTypes } from './fields/myCustomTypes';
-
+import { get } from './fields';
+import {
+  CreatedCharacter,
+  CreatedEpisode,
+  CreatedLocation,
+} from './fields/myCustomTypes';
 const service = new Service();
 export default new GraphQLObjectType({
   name: 'QueryType',
   description: 'The root query type',
   fields: {
-    get: {
+    get,
+    create: {
       type: new GraphQLUnionType({
-        name: 'UnionTypesCrud',
-        types: [LocationTypes, CharactersTypes, EpisodesTypes],
+        name: 'CreateEpisodeOrCharacterOrLocation',
+        types: [CreatedLocation, CreatedCharacter, CreatedEpisode],
         resolveType(value) {
-          console.log(value.message);
-          if (value.message === 'locations data') return 'LocationTypes';
-          if (value.message === 'characters data') return 'CharactersTypes';
-          if (value.message === 'episodes data') return 'EpisodesTypes';
+          if (value.message === 'locations created') return 'CreatedLocation';
+          if (value.message === 'characters created') return 'CreatedCharacter';
+          if (value.message === 'episodes created') return 'CreatedEpisode';
+          return 'CreatedLocation';
         },
       }),
-      description: 'Filtered location list',
-      async resolve(_: any, args: Get) {
-        return await service.getAll(args.limit, args.controller);
+      async resolve(_: any, args: any) {
+        console.log(args[args.controller]);
+        const created = await service.create(
+          args[args.controller],
+          args.controller
+        );
+        return created;
       },
-      args: service.getArgs,
+      args: service.getArgsCreate,
     },
   },
 });

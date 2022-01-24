@@ -11,16 +11,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
 const postgresLib_1 = require("../lib/postgresLib");
-class LocationsArr {
-    constructor() {
-        (this.value = []), (this.message = '');
-    }
-}
 class AuthServices {
     constructor() {
         this.postgresLib = new postgresLib_1.PostgresLib();
     }
-    get getArgs() {
+    get getArgsGetAll() {
         return {
             limit: {
                 type: new graphql_1.GraphQLList(graphql_1.GraphQLInt),
@@ -30,11 +25,85 @@ class AuthServices {
             },
         };
     }
+    get getArgsCreate() {
+        return {
+            controller: { type: graphql_1.GraphQLString },
+            locations: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'CreateLocation',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        type: { type: graphql_1.GraphQLString },
+                        dimension: { type: graphql_1.GraphQLString },
+                        residents: {
+                            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+                        },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+            episodes: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'CreateEpisodes',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        air_date: { type: graphql_1.GraphQLString },
+                        episode: { type: graphql_1.GraphQLString },
+                        characters: {
+                            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+                        },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+            characters: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'CreateCharacter',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        type: { type: graphql_1.GraphQLString },
+                        status: { type: graphql_1.GraphQLString },
+                        species: { type: graphql_1.GraphQLString },
+                        gender: { type: graphql_1.GraphQLString },
+                        origin: {
+                            type: new graphql_1.GraphQLInputObjectType({
+                                name: 'objectorigin',
+                                fields: {
+                                    name: { type: graphql_1.GraphQLString },
+                                    url: { type: graphql_1.GraphQLString },
+                                },
+                            }),
+                        },
+                        location: {
+                            type: new graphql_1.GraphQLInputObjectType({
+                                name: 'objectlocationfieldscharacter',
+                                fields: {
+                                    name: { type: graphql_1.GraphQLString },
+                                    url: { type: graphql_1.GraphQLString },
+                                },
+                            }),
+                        },
+                        image: { type: graphql_1.GraphQLString },
+                        episode: { type: new graphql_1.GraphQLList(graphql_1.GraphQLString) },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+        };
+    }
     getAll(limit, controller) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(controller);
             const filterData = yield this.postgresLib.get(controller, limit);
             return { value: filterData, message: `${controller} data` };
+        });
+    }
+    create(data, controller) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const createdData = yield this.postgresLib.create(controller, data);
+            return { value: createdData, message: `${controller} created` };
         });
     }
 }

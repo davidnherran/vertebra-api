@@ -12,19 +12,28 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const graphql_1 = require("graphql");
 const service_1 = __importDefault(require("../../../services/service"));
-const jwt_1 = __importDefault(require("../../auth/jwt"));
-const types_1 = require("./types");
+const myCustomTypes_1 = require("./myCustomTypes");
 const service = new service_1.default();
-const jwt = new jwt_1.default();
 exports.default = {
-    type: types_1.LocationsResponse,
+    type: new graphql_1.GraphQLUnionType({
+        name: 'GetAllEpisodesOrCharactersOrLocations',
+        types: [myCustomTypes_1.LocationTypes, myCustomTypes_1.CharactersTypes, myCustomTypes_1.EpisodesTypes],
+        resolveType(value) {
+            if (value.message === 'locations data')
+                return 'LocationTypes';
+            if (value.message === 'characters data')
+                return 'CharactersTypes';
+            if (value.message === 'episodes data')
+                return 'EpisodesTypes';
+        },
+    }),
     description: 'Filtered location list',
     resolve(_, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filteredData = yield service.getAll(args.limit, args.controller);
-            return filteredData;
+            return yield service.getAll(args.limit, args.controller);
         });
     },
-    args: service.getArgs,
+    args: service.getArgsGetAll,
 };

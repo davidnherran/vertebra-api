@@ -1,16 +1,22 @@
+import { GraphQLUnionType } from 'graphql';
 import Service from '../../../services/service';
-import JWT from '../../auth/jwt';
-import { LocationsResponse } from './types';
+import { CharactersTypes, EpisodesTypes, LocationTypes } from './myCustomTypes';
 
 const service = new Service();
-const jwt = new JWT();
 
 export default {
-  type: LocationsResponse,
+  type: new GraphQLUnionType({
+    name: 'GetAllEpisodesOrCharactersOrLocations',
+    types: [LocationTypes, CharactersTypes, EpisodesTypes],
+    resolveType(value) {
+      if (value.message === 'locations data') return 'LocationTypes';
+      if (value.message === 'characters data') return 'CharactersTypes';
+      if (value.message === 'episodes data') return 'EpisodesTypes';
+    },
+  }),
   description: 'Filtered location list',
   async resolve(_: any, args: Get) {
-    const filteredData = await service.getAll(args.limit, args.controller);
-    return filteredData
+    return await service.getAll(args.limit, args.controller);
   },
-  args: service.getArgs,
+  args: service.getArgsGetAll,
 };

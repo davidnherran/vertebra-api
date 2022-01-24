@@ -50,4 +50,20 @@ export class Locations extends BaseEntity {
       .where('locations.id = :id', { id })
       .execute();
   }
+
+  async create(data: LocationsCreate) {
+    const created = await Locations.createQueryBuilder('locations')
+      .insert()
+      .into(Locations)
+      .values({
+        name: data.name,
+        type: data.type,
+        dimension: data.dimension,
+        residents: data.residents,
+        url: data.url,
+        create: data.created,
+      })
+      .execute();
+    return created.raw[0]
+  }
 }
