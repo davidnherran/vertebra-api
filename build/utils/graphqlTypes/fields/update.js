@@ -30,7 +30,7 @@ exports.default = {
             const auth = context();
             if (!auth.user)
                 throw new Error(codes_1.UNAUTHORIZED);
-            const updated = yield service.update(args.id, args.controller, args[args.controller]);
+            const updated = yield service.update(args.get('id'), args.get('controller'), args.get(args.get('controller')));
             return updated;
         });
     },

@@ -19,12 +19,21 @@ export default {
       if (value.message === 'episodes created') return 'CreatedEpisode';
     },
   }),
-  async resolve(_: undefined, args: any, context: Function) {
+  async resolve(
+    _: undefined,
+    args: Map<
+      string,
+      string | (LocationsCreate & CharactersCreate & EpisodesCreate)
+    >,
+    context: Function
+  ) {
     const auth: { user: UserDB } = context();
     if (!auth.user) throw new Error(UNAUTHORIZED);
     const created = await service.create(
-      args[args.controller],
-      args.controller
+      args.get(args.get('controller') as string) as LocationsCreate &
+        CharactersCreate &
+        EpisodesCreate,
+      args.get('controller') as string
     );
     return created;
   },

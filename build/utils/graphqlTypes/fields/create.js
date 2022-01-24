@@ -35,7 +35,7 @@ exports.default = {
             const auth = context();
             if (!auth.user)
                 throw new Error(codes_1.UNAUTHORIZED);
-            const created = yield service.create(args[args.controller], args.controller);
+            const created = yield service.create(args.get(args.get('controller')), args.get('controller'));
             return created;
         });
     },

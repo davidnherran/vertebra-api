@@ -13,13 +13,22 @@ export default {
       message: { type: GraphQLString },
     },
   }),
-  async resolve(_: undefined, args: any, context: Function) {
-    const auth: { user: UserDB }  = context();
+  async resolve(
+    _: undefined,
+    args: Map<
+      string,
+      string | (CharactersUpdate & EpisodesUpdate & LocationsUpdate) | number
+    >,
+    context: Function
+  ) {
+    const auth: { user: UserDB } = context();
     if (!auth.user) throw new Error(UNAUTHORIZED);
     const updated = await service.update(
-      args.id,
-      args.controller,
-      args[args.controller]
+      args.get('id') as number,
+      args.get('controller') as string,
+      args.get(args.get('controller') as string) as CharactersUpdate &
+        EpisodesUpdate &
+        LocationsUpdate
     );
     return updated;
   },

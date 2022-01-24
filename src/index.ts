@@ -17,18 +17,16 @@ const context = (req: Request) => {
 
 app.use(
   '/graphql',
-  graphqlHTTP((req) => {
-    return {
-      schema,
-      graphiql: envConfig.dev,
-      customFormatErrorFn(err) {
-        return {
-          message: err.message,
-        };
-      },
-      context: () => context(req as Request),
-    };
-  })
+  graphqlHTTP((req, res, next) => ({
+    schema,
+    graphiql: envConfig.dev,
+    customFormatErrorFn(err) {
+      return {
+        message: err.message,
+      };
+    },
+    context: () => context(req as Request),
+  }))
 );
 
 app.listen(envConfig.port, () =>

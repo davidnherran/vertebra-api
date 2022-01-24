@@ -1,51 +1,66 @@
-import { program } from 'commander';
 import { prompt } from 'inquirer';
-import rdl from 'readline';
-import process from 'process';
+import { Pool } from 'pg';
+import { envConfig } from '../config';
+import { program } from 'commander';
+import Spinner from './loaders';
+const spinner = new Spinner();
+import migrate from './functions/migrate';
 
-const std = process.stdout;
-
-/* class Spinner {
-  spin(concat: string) {
-    process.stdout.write('\x1B[?25l');
-
-    const spinners = [
-      "⢹",
-			"⢺",
-			"⢼",
-			"⣸",
-			"⣇",
-			"⡧",
-			"⡗",
-			"⡏"
-    ];
-
-    let index = 0;
-
-    setInterval(() => {
-      let line = spinners[index];
-
-      if (line === undefined) {
-        index = 0;
-        line = spinners[index];
-      }
-
-      std.write(`${line} ${concat}`);
-
-      rdl.cursorTo(std, 0);
-
-      index = index >= spinners.length ? 0 : index + 1;
-    }, 80);
-  }
-}
- */
 program
   .version('0.0.1')
-  .description('vertebra technical test database migration');
+  .description('Terminal application for Postgresql database migration');
 
-program.command('migration').action(async () => {
-  //const spinners = new Spinner();
-  //spinners.spin('cargando');
-});
+program
+  .command('migrate')
+  .description('controller database')
+  .option('--delete', 'delete database')
+  .action(async (action) => {
+    if (action.delete) {
+      const dataConnection = await prompt([
+        {
+          type: 'input',
+          message: 'Username',
+          name: 'username',
+        },
+        {
+          type: 'password',
+          message: 'Password',
+          name: 'password',
+        },
+        {
+          type: 'input',
+          message: 'Database name',
+          name: 'database_name',
+        },
+      ]);
+      const { username, password, database_name } = dataConnection;
 
-program.parse();
+      const pool = new Pool({
+        user: username,
+        password,
+        port: 5432,
+        host: 'localhost',
+      });
+
+      pool.query(`drop database ${database_name}`, (err, res) => {
+        if (err) {
+          console.log(
+            `An error occurred while trying to delete the named database ${database_name}`
+          );
+        } else {
+          console.log(`${database_name} database deleted`)
+        }
+      });
+    } else {
+      const error = await migrate();
+      if (error) {
+        const error = await migrate();
+        if (error) {
+          const error = await migrate();
+          console.log(error);
+        }
+      }
+    }
+  });
+
+program.parse(process.argv);
