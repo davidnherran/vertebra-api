@@ -83,7 +83,7 @@ class AuthServices {
                         gender: { type: graphql_1.GraphQLString },
                         origin: {
                             type: new graphql_1.GraphQLInputObjectType({
-                                name: 'objectorigin',
+                                name: 'objectorigincreate',
                                 fields: {
                                     name: { type: graphql_1.GraphQLString },
                                     url: { type: graphql_1.GraphQLString },
@@ -92,7 +92,7 @@ class AuthServices {
                         },
                         location: {
                             type: new graphql_1.GraphQLInputObjectType({
-                                name: 'objectlocationfieldscharacter',
+                                name: 'objectlocationcreate',
                                 fields: {
                                     name: { type: graphql_1.GraphQLString },
                                     url: { type: graphql_1.GraphQLString },
@@ -108,9 +108,79 @@ class AuthServices {
             },
         };
     }
+    get getArgsUpdate() {
+        return {
+            controller: { type: graphql_1.GraphQLString },
+            locations: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'UpdateLocationArgs',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        type: { type: graphql_1.GraphQLString },
+                        dimension: { type: graphql_1.GraphQLString },
+                        residents: {
+                            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+                        },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+            episodes: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'UpdateEpisodesArgs',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        air_date: { type: graphql_1.GraphQLString },
+                        episode: { type: graphql_1.GraphQLString },
+                        characters: {
+                            type: new graphql_1.GraphQLList(graphql_1.GraphQLString),
+                        },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+            characters: {
+                type: new graphql_1.GraphQLInputObjectType({
+                    name: 'UpdateCharacterArgs',
+                    fields: {
+                        name: { type: graphql_1.GraphQLString },
+                        type: { type: graphql_1.GraphQLString },
+                        status: { type: graphql_1.GraphQLString },
+                        species: { type: graphql_1.GraphQLString },
+                        gender: { type: graphql_1.GraphQLString },
+                        origin: {
+                            type: new graphql_1.GraphQLInputObjectType({
+                                name: 'objectoriginupdate',
+                                fields: {
+                                    name: { type: graphql_1.GraphQLString },
+                                    url: { type: graphql_1.GraphQLString },
+                                },
+                            }),
+                        },
+                        location: {
+                            type: new graphql_1.GraphQLInputObjectType({
+                                name: 'objectlocationupdate',
+                                fields: {
+                                    name: { type: graphql_1.GraphQLString },
+                                    url: { type: graphql_1.GraphQLString },
+                                },
+                            }),
+                        },
+                        image: { type: graphql_1.GraphQLString },
+                        episode: { type: new graphql_1.GraphQLList(graphql_1.GraphQLString) },
+                        url: { type: graphql_1.GraphQLString },
+                        created: { type: graphql_1.GraphQLString },
+                    },
+                }),
+            },
+            id: { type: graphql_1.GraphQLInt },
+        };
+    }
     getAll(limit, controller) {
         return __awaiter(this, void 0, void 0, function* () {
-            const data = yield this.postgresLib.get(controller, limit);
+            const data = yield this.postgresLib.find(controller, limit);
             return { value: data, message: `${controller} data` };
         });
     }
@@ -130,6 +200,12 @@ class AuthServices {
         return __awaiter(this, void 0, void 0, function* () {
             const deletedData = yield this.postgresLib.delete(controller, id);
             return deletedData;
+        });
+    }
+    update(id, controller, newdata) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const updatedData = yield this.postgresLib.update(controller, id, newdata);
+            return updatedData;
         });
     }
 }

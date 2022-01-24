@@ -69,7 +69,7 @@ export class Characters extends BaseEntity {
   update(id: number, data: object) {
     return Characters.createQueryBuilder('characters')
       .update()
-      .set(data)
+      .set({ ...data })
       .where('characters.id = :id', { id })
       .execute();
   }
@@ -86,17 +86,7 @@ export class Characters extends BaseEntity {
       .insert()
       .into(Characters)
       .values({
-        name: data.name,
-        type: data.type,
-        status: data.status,
-        species: data.species,
-        gender: data.gender,
-        origin: data.origin,
-        location: data.location,
-        image: data.image,
-        episode: data.episode,
-        url: data.created,
-        created: data.created,
+        ...data,
       })
       .execute();
     return created.raw[0];

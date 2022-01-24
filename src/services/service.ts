@@ -82,7 +82,7 @@ export default class AuthServices {
             gender: { type: GraphQLString },
             origin: {
               type: new GraphQLInputObjectType({
-                name: 'objectorigin',
+                name: 'objectorigincreate',
                 fields: {
                   name: { type: GraphQLString },
                   url: { type: GraphQLString },
@@ -91,7 +91,7 @@ export default class AuthServices {
             },
             location: {
               type: new GraphQLInputObjectType({
-                name: 'objectlocationfieldscharacter',
+                name: 'objectlocationcreate',
                 fields: {
                   name: { type: GraphQLString },
                   url: { type: GraphQLString },
@@ -108,8 +108,79 @@ export default class AuthServices {
     };
   }
 
+  public get getArgsUpdate() {
+    return {
+      controller: { type: GraphQLString },
+      locations: {
+        type: new GraphQLInputObjectType({
+          name: 'UpdateLocationArgs',
+          fields: {
+            name: { type: GraphQLString },
+            type: { type: GraphQLString },
+            dimension: { type: GraphQLString },
+            residents: {
+              type: new GraphQLList(GraphQLString),
+            },
+            url: { type: GraphQLString },
+            created: { type: GraphQLString },
+          },
+        }),
+      },
+      episodes: {
+        type: new GraphQLInputObjectType({
+          name: 'UpdateEpisodesArgs',
+          fields: {
+            name: { type: GraphQLString },
+            air_date: { type: GraphQLString },
+            episode: { type: GraphQLString },
+            characters: {
+              type: new GraphQLList(GraphQLString),
+            },
+            url: { type: GraphQLString },
+            created: { type: GraphQLString },
+          },
+        }),
+      },
+      characters: {
+        type: new GraphQLInputObjectType({
+          name: 'UpdateCharacterArgs',
+          fields: {
+            name: { type: GraphQLString },
+            type: { type: GraphQLString },
+            status: { type: GraphQLString },
+            species: { type: GraphQLString },
+            gender: { type: GraphQLString },
+            origin: {
+              type: new GraphQLInputObjectType({
+                name: 'objectoriginupdate',
+                fields: {
+                  name: { type: GraphQLString },
+                  url: { type: GraphQLString },
+                },
+              }),
+            },
+            location: {
+              type: new GraphQLInputObjectType({
+                name: 'objectlocationupdate',
+                fields: {
+                  name: { type: GraphQLString },
+                  url: { type: GraphQLString },
+                },
+              }),
+            },
+            image: { type: GraphQLString },
+            episode: { type: new GraphQLList(GraphQLString) },
+            url: { type: GraphQLString },
+            created: { type: GraphQLString },
+          },
+        }),
+      },
+      id: { type: GraphQLInt },
+    };
+  }
+
   public async getAll(limit: Array<number>, controller: string) {
-    const data = await this.postgresLib.get(controller, limit);
+    const data = await this.postgresLib.find(controller, limit);
     return { value: data, message: `${controller} data` };
   }
 
@@ -128,28 +199,22 @@ export default class AuthServices {
 
   public async delete(id: number, controller: string) {
     const deletedData = await this.postgresLib.delete(controller, id);
-    return deletedData
+    return deletedData;
   }
 
-  /*
-  public async getByid(id: number, controller: string) {
-    const exectIn = this.hastable.get(controller);
-    if (!exectIn) return CONTROLLER_IS_REQUIRED;
-    //const data = await this.postgresLib.getById(exectIn, id);
-    return 'data';
+  public async update(
+    id: number,
+    controller: string,
+    newdata: LocationsUpdate & CharactersUpdate & EpisodesUpdate
+  ) {
+    const updatedData = await this.postgresLib.update(controller, id, newdata);
+    return updatedData;
   }
 
-  public async update(id: number, newdata: object, controller: string) {
+  /*public async update(id: number, newdata: object, controller: string) {
     const exectIn = this.hastable.get(controller);
     if (!exectIn) return CONTROLLER_IS_REQUIRED;
     //const updatedData = await this.postgresLib.update(controller, id, newdata);
     return 'updatedData';
-  }
-
-  public async delete(id: number, controller: string) {
-    const exectIn = this.hastable.get(controller);
-    if (!exectIn) return CONTROLLER_IS_REQUIRED;
-    //const deletedData = await this.postgresLib.delete(controller, id);
-    return 'deletedData';
-  } */
+  }*/
 }

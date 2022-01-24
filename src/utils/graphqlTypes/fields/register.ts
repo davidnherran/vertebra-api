@@ -16,9 +16,6 @@ export default {
       password,
       displayName
     );
-
-    if (createdUser === USERNAME_IS_ALREADY_IN_USE)
-      throw new Error(USERNAME_IS_ALREADY_IN_USE);
     return jwt.generateJWT({ user: createdUser });
   },
   args: authService.argsCreateUser,

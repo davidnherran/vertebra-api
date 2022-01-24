@@ -36,7 +36,7 @@ let Episodes = Episodes_1 = class Episodes extends typeorm_1.BaseEntity {
     update(id, data) {
         return Episodes_1.createQueryBuilder('episodes')
             .update()
-            .set(data)
+            .set(Object.assign({}, data))
             .where('episodes.id = :id', { id })
             .execute();
     }
@@ -51,14 +51,7 @@ let Episodes = Episodes_1 = class Episodes extends typeorm_1.BaseEntity {
             const created = yield Episodes_1.createQueryBuilder('episodes')
                 .insert()
                 .into(Episodes_1)
-                .values({
-                name: data.name,
-                air_date: data.air_date,
-                episode: data.episode,
-                characters: data.characters,
-                url: data.url,
-                created: data.created,
-            })
+                .values(Object.assign({}, data))
                 .execute();
             return created.raw[0];
         });

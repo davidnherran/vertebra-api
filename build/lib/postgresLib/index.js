@@ -47,7 +47,7 @@ class PostgresLib {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.users.findByUsername(username);
             if (user)
-                return codes_1.USERNAME_IS_ALREADY_IN_USE;
+                throw new Error(codes_1.USERNAME_IS_ALREADY_IN_USE);
             this.users.displayName = displayName;
             this.users.password = password;
             this.users.username = username;
@@ -58,7 +58,7 @@ class PostgresLib {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.users.findByUsername(oldusername);
             if (!user)
-                return codes_1.INCORRECT_USERNAME;
+                throw new Error(codes_1.INCORRECT_USERNAME);
             return yield this.users.updateUsername(user === null || user === void 0 ? void 0 : user.id, newusername);
         });
     }
@@ -66,7 +66,7 @@ class PostgresLib {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.users.findById(id);
             if (!user)
-                return 'ID NOT EXIST';
+                throw new Error(`IDENTIFIER_${id}_NOT_EXIST`);
             return yield this.users.updatePassword(id, newpassword);
         });
     }
@@ -74,11 +74,11 @@ class PostgresLib {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield this.users.findById(id);
             if (!user)
-                return 'ID IS NOT EXIST';
+                throw new Error(`IDENTIFIER_${id}_NOT_EXIST`);
             return yield user.remove();
         });
     }
-    get(entitye, limit) {
+    find(entitye, limit) {
         return __awaiter(this, void 0, void 0, function* () {
             const entityResolve = this.entitiesCrud.get(entitye);
             if (!entityResolve)
@@ -101,7 +101,7 @@ class PostgresLib {
                 throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
             const data = yield entityResolve.findById(id);
             if (!data)
-                throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+                throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST_IN_${entity}`);
             return data;
         });
     }
@@ -117,6 +117,22 @@ class PostgresLib {
                 affected: deletedData.affected,
                 idDeleted: id,
                 message: `Data removed from ${entity}`,
+            };
+        });
+    }
+    update(entity, id, newdata) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const exist = yield this.findById(entity, id);
+            if (!exist)
+                throw new Error(`IDENTIFIER_${id}_NOT_EXIST_IN_${entity}`);
+            const entityResolve = this.entitiesCrud.get(entity);
+            if (!entityResolve)
+                throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
+            const updatedData = yield entityResolve.update(id, newdata);
+            return {
+                affected: updatedData,
+                message: `Data updated from ${entity}`,
+                idUpdated: id,
             };
         });
     }

@@ -1,13 +1,5 @@
-import {
-  GraphQLInt,
-  GraphQLObjectType,
-  GraphQLString,
-  GraphQLUnionType,
-} from 'graphql';
-import { register, login, create, delete as deleteCrud } from './fields';
-import Service from '../../services/service';
-const service = new Service();
-
+import { GraphQLObjectType } from 'graphql';
+import { register, login, create, deleteCrud, update } from './fields';
 export default new GraphQLObjectType({
   name: 'MutationType',
   description: 'The root mutation type',
@@ -16,5 +8,6 @@ export default new GraphQLObjectType({
     login,
     create,
     delete: deleteCrud,
+    update,
   },
 });

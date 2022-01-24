@@ -71,3 +71,40 @@ interface CharactersCreate {
   url: !string;
   created: !string;
 }
+
+interface LocationsUpdate {
+  name?: string;
+  type?: string;
+  dimension?: string;
+  residents?: Array<string>;
+  url?: string;
+  created?: string;
+}
+interface EpisodesUpdate {
+  name?: string;
+  air_date?: string;
+  episode?: string;
+  characters?: Array<string>;
+  url?: string;
+  created?: string;
+}
+
+interface CharactersUpdate {
+  name?: string;
+  type?: string;
+  status?: string;
+  species?: string;
+  gender?: string;
+  origin?: {
+    name?: string;
+    url?: string;
+  };
+  location?: {
+    name?: string;
+    url?: string;
+  };
+  image?: string;
+  episode?: string[];
+  url?: string;
+  created?: string;
+}

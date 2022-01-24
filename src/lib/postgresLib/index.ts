@@ -47,7 +47,7 @@ export class PostgresLib {
     displayName: string
   ) {
     const user = await this.users.findByUsername(username);
-    if (user) return USERNAME_IS_ALREADY_IN_USE;
+    if (user) throw new Error(USERNAME_IS_ALREADY_IN_USE);
     this.users.displayName = displayName;
     this.users.password = password;
     this.users.username = username;
@@ -56,23 +56,23 @@ export class PostgresLib {
 
   public async updateUsername(newusername: string, oldusername: string) {
     const user = await this.users.findByUsername(oldusername);
-    if (!user) return INCORRECT_USERNAME;
+    if (!user) throw new Error(INCORRECT_USERNAME);
     return await this.users.updateUsername(user?.id!, newusername);
   }
 
   public async updatePassword(id: number, newpassword: string) {
     const user = await this.users.findById(id);
-    if (!user) return 'ID NOT EXIST';
+    if (!user) throw new Error(`IDENTIFIER_${id}_NOT_EXIST`);
     return await this.users.updatePassword(id, newpassword);
   }
 
   public async deleteUser(id: number) {
     const user = await this.users.findById(id);
-    if (!user) return 'ID IS NOT EXIST';
+    if (!user) throw new Error(`IDENTIFIER_${id}_NOT_EXIST`);
     return await user.remove();
   }
 
-  public async get(entitye: string, limit: number[]) {
+  public async find(entitye: string, limit: number[]) {
     const entityResolve = this.entitiesCrud.get(entitye);
     if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
     return await entityResolve?.findAll(limit);
@@ -91,7 +91,7 @@ export class PostgresLib {
     const entityResolve = this.entitiesCrud.get(entity);
     if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
     const data = await entityResolve.findById(id);
-    if (!data) throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST`);
+    if (!data) throw new Error(`@crud/IDENTIFIER_${id}_NOT_EXIST_IN_${entity}`);
     return data;
   }
 
@@ -108,18 +108,24 @@ export class PostgresLib {
     };
   }
 
-  /*
-  public async get(repository: string, limit: Array<number>) {
-    console.log('ok');
-    const connect = await this.connection;
-    const data = await connect
-      .getCustomRepository(LocationsRepository)
-      .findAll(limit);
-    connect.close();
-    return data;
+  public async update(
+    entity: string,
+    id: number,
+    newdata: LocationsUpdate & CharactersUpdate & EpisodesUpdate
+  ) {
+    const exist = await this.findById(entity, id);
+    if (!exist) throw new Error(`IDENTIFIER_${id}_NOT_EXIST_IN_${entity}`);
+    const entityResolve = this.entitiesCrud.get(entity);
+    if (!entityResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    const updatedData = await entityResolve.update(id, newdata);
+    return {
+      affected: updatedData,
+      message: `Data updated from ${entity}`,
+      idUpdated: id,
+    };
   }
 
-  public async update(repository: string, id: number, newdata: object) {
+  /*public async update(repository: string, id: number, newdata: object) {
     const connect = await this.connection;
     const data = await connect
       .getCustomRepository(
@@ -132,20 +138,5 @@ export class PostgresLib {
       .update(id, newdata);
     connect.close();
     return data;
-  }
-
-  public async delete(repository: string, id: number) {
-    const connect = await this.connection;
-    const data = await connect
-      .getCustomRepository(
-        repository === 'LocationsRepository'
-          ? LocationsRepository
-          : repository === 'CharactersRepository'
-          ? CharactersRepository
-          : EpisodesRepository
-      )
-      .delete(id);
-    connect.close();
-    return data;
-  } */
+  }*/
 }

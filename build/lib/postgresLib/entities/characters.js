@@ -36,7 +36,7 @@ let Characters = Characters_1 = class Characters extends typeorm_1.BaseEntity {
     update(id, data) {
         return Characters_1.createQueryBuilder('characters')
             .update()
-            .set(data)
+            .set(Object.assign({}, data))
             .where('characters.id = :id', { id })
             .execute();
     }
@@ -51,19 +51,7 @@ let Characters = Characters_1 = class Characters extends typeorm_1.BaseEntity {
             const created = yield Characters_1.createQueryBuilder('characters')
                 .insert()
                 .into(Characters_1)
-                .values({
-                name: data.name,
-                type: data.type,
-                status: data.status,
-                species: data.species,
-                gender: data.gender,
-                origin: data.origin,
-                location: data.location,
-                image: data.image,
-                episode: data.episode,
-                url: data.created,
-                created: data.created,
-            })
+                .values(Object.assign({}, data))
                 .execute();
             return created.raw[0];
         });

@@ -13,19 +13,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const graphql_1 = require("graphql");
-const auth_1 = __importDefault(require("../../../services/auth"));
-const jwt_1 = __importDefault(require("../../auth/jwt"));
-const authService = new auth_1.default();
-const jwt = new jwt_1.default();
+const service_1 = __importDefault(require("../../../services/service"));
+const service = new service_1.default();
 exports.default = {
-    type: graphql_1.GraphQLString,
-    description: 'Register a new user and returns a token',
+    type: new graphql_1.GraphQLObjectType({
+        name: 'UpdatedCharacterOrEpisodeOrLocation',
+        fields: {
+            idUpdated: { type: graphql_1.GraphQLInt },
+            affected: { type: graphql_1.GraphQLInt },
+            message: { type: graphql_1.GraphQLString },
+        },
+    }),
     resolve(_, args) {
         return __awaiter(this, void 0, void 0, function* () {
-            const { username, password, displayName } = args;
-            const createdUser = yield authService.createUser(username, password, displayName);
-            return jwt.generateJWT({ user: createdUser });
+            console.log(args[args.controller]);
+            const updated = yield service.update(args.id, args.controller, args[args.controller]);
+            console.log(updated);
+            return updated;
         });
     },
-    args: authService.argsCreateUser,
+    args: service.getArgsUpdate,
 };

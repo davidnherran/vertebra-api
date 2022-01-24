@@ -36,12 +36,13 @@ export class Locations extends BaseEntity {
       .getOne();
   }
 
-  update(id: number, data: object) {
-    return Locations.createQueryBuilder('locations')
+  async update(id: number, data: object) {
+    const updated = await Locations.createQueryBuilder('locations')
       .update()
-      .set(data)
+      .set({ ...data })
       .where('locations.id = :id', { id })
       .execute();
+    return updated.affected
   }
 
   delete(id: number) {
@@ -55,15 +56,8 @@ export class Locations extends BaseEntity {
     const created = await Locations.createQueryBuilder('locations')
       .insert()
       .into(Locations)
-      .values({
-        name: data.name,
-        type: data.type,
-        dimension: data.dimension,
-        residents: data.residents,
-        url: data.url,
-        created: data.created,
-      })
+      .values({ ...data })
       .execute();
-    return created.raw[0]
+    return created.raw[0];
   }
 }

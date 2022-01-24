@@ -34,11 +34,14 @@ let Locations = Locations_1 = class Locations extends typeorm_1.BaseEntity {
             .getOne();
     }
     update(id, data) {
-        return Locations_1.createQueryBuilder('locations')
-            .update()
-            .set(data)
-            .where('locations.id = :id', { id })
-            .execute();
+        return __awaiter(this, void 0, void 0, function* () {
+            const updated = yield Locations_1.createQueryBuilder('locations')
+                .update()
+                .set(Object.assign({}, data))
+                .where('locations.id = :id', { id })
+                .execute();
+            return updated.affected;
+        });
     }
     delete(id) {
         return Locations_1.createQueryBuilder('locations')
@@ -51,14 +54,7 @@ let Locations = Locations_1 = class Locations extends typeorm_1.BaseEntity {
             const created = yield Locations_1.createQueryBuilder('locations')
                 .insert()
                 .into(Locations_1)
-                .values({
-                name: data.name,
-                type: data.type,
-                dimension: data.dimension,
-                residents: data.residents,
-                url: data.url,
-                created: data.created,
-            })
+                .values(Object.assign({}, data))
                 .execute();
             return created.raw[0];
         });

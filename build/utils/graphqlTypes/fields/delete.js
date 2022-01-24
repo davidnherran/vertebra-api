@@ -17,7 +17,7 @@ const service_1 = __importDefault(require("../../../services/service"));
 const service = new service_1.default();
 exports.default = {
     type: new graphql_1.GraphQLObjectType({
-        name: 'DeletedCharacter',
+        name: 'DeletedCharacterOrEpisodeOrLocation',
         fields: {
             idDeleted: { type: graphql_1.GraphQLInt },
             affected: { type: graphql_1.GraphQLInt },
