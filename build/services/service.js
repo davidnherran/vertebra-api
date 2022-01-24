@@ -15,6 +15,14 @@ class AuthServices {
     constructor() {
         this.postgresLib = new postgresLib_1.PostgresLib();
     }
+    get getArgsGetById() {
+        return {
+            id: { type: graphql_1.GraphQLInt },
+            controller: {
+                type: graphql_1.GraphQLString,
+            },
+        };
+    }
     get getArgsGetAll() {
         return {
             limit: {
@@ -96,14 +104,22 @@ class AuthServices {
     }
     getAll(limit, controller) {
         return __awaiter(this, void 0, void 0, function* () {
-            const filterData = yield this.postgresLib.get(controller, limit);
-            return { value: filterData, message: `${controller} data` };
+            const data = yield this.postgresLib.get(controller, limit);
+            return { value: data, message: `${controller} data` };
         });
     }
     create(data, controller) {
         return __awaiter(this, void 0, void 0, function* () {
             const createdData = yield this.postgresLib.create(controller, data);
             return { value: createdData, message: `${controller} created` };
+        });
+    }
+    getById(id, controller) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = yield this.postgresLib.findById(controller, id);
+            if (!data)
+                throw new Error(`ÌDENTIFIER_${id}_NOT_EXIST`);
+            return { value: data, message: `${controller} data` };
         });
     }
 }

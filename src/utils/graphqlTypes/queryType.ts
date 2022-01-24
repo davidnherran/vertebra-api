@@ -1,10 +1,19 @@
-import { GraphQLObjectType, GraphQLUnionType } from 'graphql';
+import {
+  GraphQLInt,
+  GraphQLList,
+  GraphQLObjectType,
+  GraphQLString,
+  GraphQLUnionType,
+} from 'graphql';
 import Service from '../../services/service';
-import { get } from './fields';
+import { get, create, getById } from './fields';
 import {
   CreatedCharacter,
   CreatedEpisode,
   CreatedLocation,
+  GetByIdCharacter,
+  GetByIdEpisode,
+  GetByIdLocationType,
 } from './fields/myCustomTypes';
 const service = new Service();
 export default new GraphQLObjectType({
@@ -12,26 +21,7 @@ export default new GraphQLObjectType({
   description: 'The root query type',
   fields: {
     get,
-    create: {
-      type: new GraphQLUnionType({
-        name: 'CreateEpisodeOrCharacterOrLocation',
-        types: [CreatedLocation, CreatedCharacter, CreatedEpisode],
-        resolveType(value) {
-          if (value.message === 'locations created') return 'CreatedLocation';
-          if (value.message === 'characters created') return 'CreatedCharacter';
-          if (value.message === 'episodes created') return 'CreatedEpisode';
-          return 'CreatedLocation';
-        },
-      }),
-      async resolve(_: any, args: any) {
-        console.log(args[args.controller]);
-        const created = await service.create(
-          args[args.controller],
-          args.controller
-        );
-        return created;
-      },
-      args: service.getArgsCreate,
-    },
+    create,
+    getById,
   },
 });

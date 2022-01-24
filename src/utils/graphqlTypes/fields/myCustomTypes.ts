@@ -195,3 +195,91 @@ export const CreatedEpisode = new GraphQLObjectType({
     message: { type: GraphQLString },
   },
 });
+
+export const GetByIdLocationType = new GraphQLObjectType({
+  name: 'GetByIdLocation',
+  fields: {
+    value: {
+      type: new GraphQLObjectType({
+        name: 'locationtype',
+        fields: {
+          id: { type: GraphQLInt },
+          name: { type: GraphQLString },
+          type: { type: GraphQLString },
+          dimension: { type: GraphQLString },
+          residents: { type: new GraphQLList(GraphQLString) },
+          url: { type: GraphQLString },
+          created: { type: GraphQLString },
+        },
+      }),
+    },
+    message: { type: GraphQLString },
+  },
+});
+
+export const GetByIdCharacter = new GraphQLObjectType({
+  name: 'GetByIdCharacter',
+  fields: {
+    value: {
+      type: new GraphQLObjectType({
+        name: 'getbyidcharacter',
+        fields: {
+          id: { type: GraphQLInt },
+          name: { type: GraphQLString },
+          status: { type: GraphQLString },
+          specie: { type: GraphQLString },
+          type: { type: GraphQLString },
+          gender: { type: GraphQLString },
+          origin: {
+            type: new GraphQLObjectType({
+              name: 'objectOrigincharacterById',
+              fields: {
+                name: { type: GraphQLString },
+                url: { type: GraphQLString },
+              },
+            }),
+          },
+          location: {
+            type: new GraphQLObjectType({
+              name: 'objectLocationOfCharacterById',
+              fields: {
+                name: { type: GraphQLString },
+                url: { type: GraphQLString },
+              },
+            }),
+          },
+          image: { type: GraphQLString },
+          episode: {
+            type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
+          },
+          url: { type: GraphQLString },
+          created: { type: GraphQLString },
+        },
+      }),
+    },
+    message: { type: GraphQLString },
+  },
+});
+
+export const GetByIdEpisode = new GraphQLObjectType({
+  name: 'GetByIdEpisode',
+  fields: {
+    value: {
+      type: new GraphQLObjectType({
+        name: 'getbyidepisode',
+        fields: {
+          id: { type: GraphQLInt },
+          name: { type: GraphQLString },
+          air_date: { type: GraphQLString },
+          episode: { type: GraphQLString },
+          characters: {
+            type: new GraphQLList(GraphQLString),
+          },
+          url: { type: GraphQLString },
+          created: { type: GraphQLString },
+        },
+      }),
+    },
+    message: { type: GraphQLString },
+  },
+});

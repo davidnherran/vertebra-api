@@ -87,6 +87,12 @@ export class PostgresLib {
     return await entityeResolve.create(data);
   }
 
+  public async findById(entity: string, id: number) {
+    const entityeResolve = this.entitiesCrud.get(entity);
+    if (!entityeResolve) throw new Error(CONTROLLER_IS_REQUIRED);
+    return await entityeResolve.findById(id);
+  }
+
   /*
   public async get(repository: string, limit: Array<number>) {
     console.log('ok');
@@ -94,20 +100,6 @@ export class PostgresLib {
     const data = await connect
       .getCustomRepository(LocationsRepository)
       .findAll(limit);
-    connect.close();
-    return data;
-  }
-  public async getById(repository: string, id: number) {
-    const connect = await this.connection;
-    const data = await connect
-      .getCustomRepository(
-        repository === 'LocationsRepository'
-          ? LocationsRepository
-          : repository === 'CharactersRepository'
-          ? CharactersRepository
-          : EpisodesRepository
-      )
-      .findById(id);
     connect.close();
     return data;
   }

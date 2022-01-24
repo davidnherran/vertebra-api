@@ -11,6 +11,15 @@ export default class AuthServices {
     this.postgresLib = new PostgresLib();
   }
 
+  public get getArgsGetById() {
+    return {
+      id: { type: GraphQLInt },
+      controller: {
+        type: GraphQLString,
+      },
+    };
+  }
+
   public get getArgsGetAll() {
     return {
       limit: {
@@ -93,8 +102,8 @@ export default class AuthServices {
   }
 
   public async getAll(limit: Array<number>, controller: string) {
-    const filterData = await this.postgresLib.get(controller, limit);
-    return { value: filterData, message: `${controller} data` };
+    const data = await this.postgresLib.get(controller, limit);
+    return { value: data, message: `${controller} data` };
   }
 
   public async create(
@@ -104,6 +113,13 @@ export default class AuthServices {
     const createdData = await this.postgresLib.create(controller, data);
     return { value: createdData, message: `${controller} created` };
   }
+
+  public async getById(id: number, controller: string) {
+    const data = await this.postgresLib.findById(controller, id);
+    if(!data) throw new Error(`ÌDENTIFIER_${id}_NOT_EXIST`)
+    return { value: data, message: `${controller} data` };
+  }
+
   /*
   public async getByid(id: number, controller: string) {
     const exectIn = this.hastable.get(controller);

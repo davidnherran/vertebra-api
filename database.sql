@@ -25,7 +25,7 @@ CREATE TABLE characters(
     origin json,
     location json,
     image text,
-    episode text [],
+    episode text[],
     url text,
     created text
 );

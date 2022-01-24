@@ -94,5 +94,13 @@ class PostgresLib {
             return yield entityeResolve.create(data);
         });
     }
+    findById(entity, id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const entityeResolve = this.entitiesCrud.get(entity);
+            if (!entityeResolve)
+                throw new Error(codes_1.CONTROLLER_IS_REQUIRED);
+            return yield entityeResolve.findById(id);
+        });
+    }
 }
 exports.PostgresLib = PostgresLib;

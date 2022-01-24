@@ -57,7 +57,7 @@ let Locations = Locations_1 = class Locations extends typeorm_1.BaseEntity {
                 dimension: data.dimension,
                 residents: data.residents,
                 url: data.url,
-                create: data.created,
+                created: data.created,
             })
                 .execute();
             return created.raw[0];

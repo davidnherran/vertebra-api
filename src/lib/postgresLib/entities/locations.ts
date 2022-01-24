@@ -61,7 +61,7 @@ export class Locations extends BaseEntity {
         dimension: data.dimension,
         residents: data.residents,
         url: data.url,
-        create: data.created,
+        created: data.created,
       })
       .execute();
     return created.raw[0]
