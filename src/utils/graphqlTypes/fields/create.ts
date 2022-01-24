@@ -18,8 +18,9 @@ export default {
       if (value.message === 'episodes created') return 'CreatedEpisode';
     },
   }),
-  async resolve(_: any, args: any) {
-    console.log(args[args.controller]);
+  async resolve(_: any, args: any, context: any) {
+    const auth = context();
+    if (!auth.user) throw new Error('UNAHUTORIZED');
     const created = await service.create(
       args[args.controller],
       args.controller

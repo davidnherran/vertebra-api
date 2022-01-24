@@ -29,9 +29,11 @@ exports.default = {
                 return 'CreatedEpisode';
         },
     }),
-    resolve(_, args) {
+    resolve(_, args, context) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log(args[args.controller]);
+            const auth = context();
+            if (!auth.user)
+                throw new Error('UNAHUTORIZED');
             const created = yield service.create(args[args.controller], args.controller);
             return created;
         });

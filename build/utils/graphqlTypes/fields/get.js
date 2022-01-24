@@ -30,8 +30,11 @@ exports.default = {
         },
     }),
     description: 'Filtered location list',
-    resolve(_, args) {
+    resolve(_, args, context) {
         return __awaiter(this, void 0, void 0, function* () {
+            const auth = context();
+            if (!auth.user)
+                throw new Error('UNAHUTORIZED');
             return yield service.getAll(args.limit, args.controller);
         });
     },

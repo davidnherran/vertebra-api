@@ -13,7 +13,9 @@ export default {
     },
   }),
   description: 'Filtered location list',
-  async resolve(_: any, args: any) {
+  async resolve(_: any, args: any, context: any) {
+    const auth = context();
+    if (!auth.user) throw new Error('UNAHUTORIZED');
     const deletedData = await service.delete(args.id, args.controller);
     return deletedData;
   },

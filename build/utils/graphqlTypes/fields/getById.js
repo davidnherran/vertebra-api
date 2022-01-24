@@ -31,8 +31,11 @@ exports.default = {
             });
         },
     }),
-    resolve(_, args) {
+    resolve(_, args, context) {
         return __awaiter(this, void 0, void 0, function* () {
+            const auth = context();
+            if (!auth.user)
+                throw new Error('UNAHUTORIZED');
             const data = yield service.getById(args.id, args.controller);
             console.log(data);
             return data;

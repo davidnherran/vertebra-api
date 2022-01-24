@@ -15,7 +15,9 @@ export default {
     },
   }),
   description: 'Filtered location list',
-  async resolve(_: any, args: Get) {
+  async resolve(_: any, args: Get, context: any) {
+    const auth = context();
+    if (!auth.user) throw new Error('UNAHUTORIZED');
     return await service.getAll(args.limit, args.controller);
   },
   args: service.getArgsGetAll,

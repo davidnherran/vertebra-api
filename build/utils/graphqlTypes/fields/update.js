@@ -24,8 +24,11 @@ exports.default = {
             message: { type: graphql_1.GraphQLString },
         },
     }),
-    resolve(_, args) {
+    resolve(_, args, context) {
         return __awaiter(this, void 0, void 0, function* () {
+            const auth = context();
+            if (!auth.user)
+                throw new Error('UNAHUTORIZED');
             console.log(args[args.controller]);
             const updated = yield service.update(args.id, args.controller, args[args.controller]);
             console.log(updated);

@@ -17,7 +17,9 @@ export default {
       if (value.message === 'episodes data') return 'GetByIdEpisode';
     },
   }),
-  async resolve(_: any, args: any) {
+  async resolve(_: any, args: any, context: any) {
+    const auth = context();
+    if (!auth.user) throw new Error('UNAHUTORIZED');
     const data = await service.getById(args.id, args.controller);
     console.log(data);
     return data;

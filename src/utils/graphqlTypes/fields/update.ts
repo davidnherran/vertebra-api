@@ -12,7 +12,9 @@ export default {
       message: { type: GraphQLString },
     },
   }),
-  async resolve(_: any, args: any) {
+  async resolve(_: any, args: any, context: any) {
+    const auth = context();
+    if (!auth.user) throw new Error('UNAHUTORIZED');
     console.log(args[args.controller]);
     const updated = await service.update(
       args.id,
